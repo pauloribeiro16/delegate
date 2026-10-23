@@ -35,3 +35,4 @@ videos/**/.hyperframes/
 # Python
 __pycache__/
 *.pyc
+.neon

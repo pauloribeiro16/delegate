@@ -15,7 +15,7 @@ async function handler(req: Request): Promise<Response> {
       return json({ ok: true, codigo: k.criarLigacaoWeb() });
     }
     const codigo = (new URL(req.url).searchParams.get('codigo') ?? '').toLowerCase();
-    const ligacao = codigo ? k.obterLigacaoWeb(codigo) : null;
+    const ligacao = codigo ? await k.obterLigacaoWeb(codigo) : null;
     return json({ ok: true, ligada: Boolean(ligacao), pessoa: ligacao?.pessoa ?? null });
   } catch (err: any) {
     return json({ erro: err?.message ?? String(err) }, 500);

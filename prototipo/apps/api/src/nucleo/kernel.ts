@@ -66,7 +66,7 @@ export interface Kernel {
   confirmarCmd: (dados: { token_cmd: string; pessoa?: string; servico?: string; processo?: string; nif?: string; nome?: string }) => Promise<void>;
   aoReceberCanalWeb: (entrada: EntradaCanalWeb) => Promise<void>;
   criarLigacaoWeb: () => string;
-  obterLigacaoWeb: (codigo: string) => LigacaoWeb | null;
+  obterLigacaoWeb: (codigo: string) => Promise<LigacaoWeb | null>;
   obterPedidosConsola: () => Promise<any[]>;
   /** Notifica o cidadão de alterações do SU ainda não despachadas (modo alojado). */
   despacharNotificacoesSU: () => Promise<void>;
@@ -216,12 +216,37 @@ export async function criarKernel(deps: DependenciasKernel): Promise<Kernel> {
   });
 
   // ── Ligações de sessões Web (painel ↔ Telegram) ────────────────────────
-  const ligacoesWeb = new Map<string, LigacaoWeb>();
+  // Vivem na BASE, não na RAM: no alojamento cada função é uma instância
+  // distinta — o POST do painel, o /start do webhook e a sonda do browser
+  // raramente caem na mesma. Uma tabela tornava-as partilhadas.
+  const ligacoesWeb = new Map<string, LigacaoWeb>(); // atalho quente (local)
+
+  await base.escrita
+    .query(
+      `CREATE TABLE IF NOT EXISTS nucleo.ligacoes (
+         codigo   TEXT PRIMARY KEY,
+         pessoa   TEXT NOT NULL,
+         conversa TEXT NOT NULL,
+         quando   TIMESTAMPTZ NOT NULL DEFAULT now()
+       )`,
+    )
+    .catch((err: unknown) => console.warn('⚠ tabela de ligações:', (err as Error).message));
+
+  async function guardarLigacao(codigo: string, ligacao: LigacaoWeb): Promise<void> {
+    ligacoesWeb.set(codigo, ligacao);
+    await base.escrita
+      .query(
+        `INSERT INTO nucleo.ligacoes (codigo, pessoa, conversa, quando) VALUES ($1, $2, $3, $4)
+         ON CONFLICT (codigo) DO UPDATE SET pessoa = EXCLUDED.pessoa, conversa = EXCLUDED.conversa, quando = EXCLUDED.quando`,
+        [codigo, ligacao.pessoa, ligacao.conversa, ligacao.quando],
+      )
+      .catch((err: unknown) => console.warn('⚠ ligação sem registo na base:', (err as Error).message));
+  }
 
   function criarLigacaoWeb(): string {
     const codigo = randomBytes(16).toString('hex');
     if (deps.canalWebAutoLigar) {
-      ligacoesWeb.set(codigo, {
+      void guardarLigacao(codigo, {
         pessoa: PESSOA_PADRAO,
         conversa: conversasPorPessoa.get(PESSOA_PADRAO) ?? estadoCanal.ultimaConversa ?? '5361126841',
         quando: new Date().toISOString(),
@@ -231,8 +256,24 @@ export async function criarKernel(deps: DependenciasKernel): Promise<Kernel> {
     return codigo;
   }
 
-  function obterLigacaoWeb(codigo: string): LigacaoWeb | null {
-    return ligacoesWeb.get(codigo.toLowerCase()) ?? null;
+  function obterLigacaoWeb(codigo: string): Promise<LigacaoWeb | null> {
+    const codigoLimpo = codigo.toLowerCase();
+    const quente = ligacoesWeb.get(codigoLimpo) ?? null;
+    // A base é a verdade (cada função do alojamento é uma instância distinta);
+    // o atalho quente serve só para poupar uma ida quando já está aqui.
+    return base.escrita
+      .query('SELECT pessoa, conversa, quando FROM nucleo.ligacoes WHERE codigo = $1', [codigoLimpo])
+      .then((r: { rows: Array<{ pessoa: string; conversa: string; quando: string | Date }> }) => {
+        if (!r.rows[0]) return quente;
+        const ligacao: LigacaoWeb = {
+          pessoa: r.rows[0].pessoa,
+          conversa: r.rows[0].conversa,
+          quando: new Date(r.rows[0].quando).toISOString(),
+        };
+        ligacoesWeb.set(codigoLimpo, ligacao);
+        return ligacao;
+      })
+      .catch(() => quente);
   }
 
   const tratarCanal = criarTratadorMensagens({
@@ -266,7 +307,7 @@ export async function criarKernel(deps: DependenciasKernel): Promise<Kernel> {
   let filaCanalWeb: Promise<void> = Promise.resolve();
 
   async function aoReceberCanalWeb(entrada: EntradaCanalWeb): Promise<void> {
-    const ligacao = obterLigacaoWeb(entrada.codigo);
+    const ligacao = await obterLigacaoWeb(entrada.codigo);
     if (!ligacao) {
       throw new Error('Sessão não ligada: faça /start no Telegram com o código do painel');
     }
