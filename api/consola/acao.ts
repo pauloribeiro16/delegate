@@ -6,8 +6,8 @@
  * (Telegram + painel, pelo mesmo fan-out).
  */
 import { kernel, json, corpoJson, preflight } from '../_kernel.ts';
-import { PESSOA_PADRAO } from '../../apps/api/src/nucleo/kernel.ts';
-import { SESSAO } from '../../apps/api/src/nucleo/bd.ts';
+import { PESSOA_PADRAO } from '../../prototipo/apps/api/src/nucleo/kernel.ts';
+import { SESSAO } from '../../prototipo/apps/api/src/nucleo/bd.ts';
 
 export const config = { runtime: 'nodejs', maxDuration: 60 };
 

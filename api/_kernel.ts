@@ -5,8 +5,8 @@
  * pedidos (o runtime mantém a instância quente). A base é sempre externa:
  * sem DATABASE_URL não há como correr aqui — o modo embutido é só local.
  */
-import { abrirBase, URL_BASE_EXTERNA } from '../apps/api/src/nucleo/bd.ts';
-import { criarKernel, type Kernel } from '../apps/api/src/nucleo/kernel.ts';
+import { abrirBase, URL_BASE_EXTERNA } from '../prototipo/apps/api/src/nucleo/bd.ts';
+import { criarKernel, type Kernel } from '../prototipo/apps/api/src/nucleo/kernel.ts';
 
 const globalKernel = globalThis as unknown as { __kernelDelegate?: Promise<Kernel> };
 

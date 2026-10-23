@@ -2,10 +2,10 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "cleanUrls": true,
   "functions": {
-    "prototipo/api/**/*.ts": {
+    "api/**/*.ts": {
       "memory": 1024,
       "maxDuration": 30,
-      "includeFiles": "../{data,registo}/**"
+      "includeFiles": "prototipo/{data,registo}/**"
     }
   },
   "rewrites": [
@@ -18,14 +18,7 @@
     { "source": "/design-system", "destination": "/design-system/index.html" },
     { "source": "/assets/:ficheiro", "destination": "/site/assets/:ficheiro" },
     { "source": "/legendas.json", "destination": "/site/legendas.json" },
-    { "source": "/api/eventos/stream", "destination": "/prototipo/api/eventos" },
-    { "source": "/api/telegram", "destination": "/prototipo/api/telegram" },
-    { "source": "/api/canal/:peca", "destination": "/prototipo/api/canal/:peca" },
-    { "source": "/api/consola/:peca", "destination": "/prototipo/api/consola/:peca" },
-    { "source": "/api/cmd/confirmar", "destination": "/prototipo/api/cmd/confirmar" },
-    { "source": "/api/porta/:peca", "destination": "/prototipo/api/porta/:peca" },
-    { "source": "/api/eventos", "destination": "/prototipo/api/eventos" },
-    { "source": "/api/saude", "destination": "/prototipo/api/saude" }
+    { "source": "/api/eventos/stream", "destination": "/api/eventos" }
   ],
   "env": {
     "SESSAO": "demo",

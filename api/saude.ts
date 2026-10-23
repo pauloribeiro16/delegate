@@ -3,7 +3,7 @@
  *   GET /api/saude — diz se o kernel arranca e se os dados estão no sítio.
  */
 import { kernel, json, preflight } from './_kernel.ts';
-import { raizPrototipo } from '../apps/api/src/nucleo/dados-raiz.ts';
+import { raizPrototipo } from '../prototipo/apps/api/src/nucleo/dados-raiz.ts';
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 

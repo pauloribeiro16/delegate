@@ -11,11 +11,11 @@
  */
 import pg from 'pg';
 import type { IncomingMessage, ServerResponse } from 'node:http';
-import { criarServidorPorta } from '../../apps/api/src/porta/servidor.ts';
-import { CatalogoPorta } from '../../apps/api/src/porta/servicos.ts';
-import { Registo } from '../../apps/api/src/nucleo/eventos/registo.ts';
-import { servicosUrbanos } from '../../apps/api/src/su/processos.ts';
-import { raizPrototipo } from '../../apps/api/src/nucleo/dados-raiz.ts';
+import { criarServidorPorta } from '../../prototipo/apps/api/src/porta/servidor.ts';
+import { CatalogoPorta } from '../../prototipo/apps/api/src/porta/servicos.ts';
+import { Registo } from '../../prototipo/apps/api/src/nucleo/eventos/registo.ts';
+import { servicosUrbanos } from '../../prototipo/apps/api/src/su/processos.ts';
+import { raizPrototipo } from '../../prototipo/apps/api/src/nucleo/dados-raiz.ts';
 import { join } from 'node:path';
 
 export const config = { runtime: 'nodejs', maxDuration: 60 };

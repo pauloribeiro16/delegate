@@ -1,0 +1,18 @@
+{
+  "name": "delegate-implantacao",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Dependências das funções serverless do Vercel (api/). O protótipo tem as suas em prototipo/package.json.",
+  "license": "EUPL-1.2",
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/client": "^2.3.1",
+    "@modelcontextprotocol/server": "^2.3.1",
+    "grammy": "^1.46.0",
+    "pg": "^8.23.1",
+    "zod": "^4.6.7"
+  }
+}
