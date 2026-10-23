@@ -7,7 +7,7 @@ import { kernel, json, preflight } from '../_kernel.js';
 
 export const config = { maxDuration: 30 };
 
-export async function GET(req: Request): Promise<Response> {
+async function handler(req: Request): Promise<Response> {
   if (req.method === 'OPTIONS') return preflight();
   try {
     const k = await kernel();
@@ -20,4 +20,16 @@ export async function GET(req: Request): Promise<Response> {
   } catch (err: any) {
     return json({ erro: err?.message ?? String(err) }, 500);
   }
+}
+
+export async function GET(req: Request): Promise<Response> {
+  return handler(req);
+}
+
+export async function POST(req: Request): Promise<Response> {
+  return handler(req);
+}
+
+export async function OPTIONS(req: Request): Promise<Response> {
+  return preflight();
 }
