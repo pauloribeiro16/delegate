@@ -9,9 +9,8 @@
  */
 import { criarCanalGrammy, type CanalGrammy, type Botoes, type MensagemRecebida } from './canal.ts';
 import { SESSAO, URL_BASE_EXTERNA, type Base } from './bd.ts';
-import type { Registo } from './eventos/registo.ts';
+import { Registo } from './eventos/registo.ts';
 import { criarTratadorMensagens, type EstadoCanalPartilhado } from './canal/tratador-mensagens.ts';
-import { Henriques } from './henriques/henriques.ts';
 import { Henriques } from './henriques/henriques.ts';
 import { RedatorOpenRouter } from './henriques/redator-openrouter.ts';
 import { MotorDecisaoTypeSafe } from './typesafe/motor-decisao.ts';
@@ -61,6 +60,10 @@ export interface Kernel {
   conversasPorPessoa: Map<string, string>;
   estado: EstadoCanalPartilhado;
   tratar: (m: MensagemRecebida) => Promise<void>;
+  /** Webhook do Telegram: processa uma atualização crua pelo mesmo canal. */
+  processarAtualizacaoTelegram: (atualizacao: unknown) => Promise<void>;
+  /** Confirmação da Chave Móvel Digital (cmd/confirmar). */
+  confirmarCmd: (dados: { token_cmd: string; pessoa?: string; servico?: string; processo?: string; nif?: string; nome?: string }) => Promise<void>;
   aoReceberCanalWeb: (entrada: EntradaCanalWeb) => Promise<void>;
   criarLigacaoWeb: () => string;
   obterLigacaoWeb: (codigo: string) => LigacaoWeb | null;
@@ -86,6 +89,9 @@ const canalNulo: CanalGrammy = {
   async aEscrever() {},
   async parar() {},
   _aoReceber() {},
+  _bot() {
+    throw new Error('Telegram desativado: sem bot neste ambiente');
+  },
 };
 
 export async function criarKernel(deps: DependenciasKernel): Promise<Kernel> {
@@ -251,6 +257,11 @@ export async function criarKernel(deps: DependenciasKernel): Promise<Kernel> {
       console.log(`🔗 [Canal Web] Sessão ligada a ${m.pessoa} (código ${codigo.slice(0, 8)}…)`);
     },
   });
+
+  // O tratador entra NO canal do Telegram (o wrapper herda o fecho via spread):
+  // é assim que as atualizações do bot — long polling local ou webhook no
+  // Vercel — chegam ao mesmo caminho que o painel.
+  canal._aoReceber(tratarCanal.tratar);
 
   let filaCanalWeb: Promise<void> = Promise.resolve();
 
@@ -470,6 +481,14 @@ export async function criarKernel(deps: DependenciasKernel): Promise<Kernel> {
     conversasPorPessoa,
     estado: estadoCanal,
     tratar: (m) => tratarCanal.tratar(m),
+    /** Webhook do Telegram: processa uma atualização crua pelo mesmo canal. */
+    processarAtualizacaoTelegram: async (atualizacao: unknown) => {
+      const bot = canalTelegram._bot();
+      await bot.init();
+      await bot.handleUpdate(atualizacao as never);
+    },
+    confirmarCmd: (dados: { token_cmd: string; pessoa?: string; servico?: string; processo?: string; nif?: string; nome?: string }) =>
+      cenarios.processarConfirmacaoCmd({ ...dados, pessoa: dados.pessoa ?? PESSOA_PADRAO } as never),
     aoReceberCanalWeb,
     criarLigacaoWeb,
     obterLigacaoWeb,

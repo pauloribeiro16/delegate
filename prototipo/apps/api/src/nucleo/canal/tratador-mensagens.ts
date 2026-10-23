@@ -9,6 +9,7 @@
  */
 import { promises as fs } from 'node:fs';
 import { join } from 'node:path';
+import { raizPrototipo } from '../dados-raiz.ts';
 import type { CanalGrammy, Botao, MensagemRecebida } from '../canal.ts';
 import type { Registo } from '../eventos/registo.ts';
 import type { Henriques } from '../henriques/henriques.ts';
@@ -52,7 +53,7 @@ export interface DependenciasTratadorCanal {
   aoLigarPessoa?: (codigo: string, m: MensagemRecebida) => void;
 }
 
-const RAIZ_DADOS = '../../../../../data/cenarios_simulados';
+const RAIZ_DADOS = join(raizPrototipo(), 'data', 'cenarios_simulados');
 
 export function criarTratadorMensagens(deps: DependenciasTratadorCanal) {
   const {
@@ -764,38 +765,38 @@ export function criarTratadorMensagens(deps: DependenciasTratadorCanal) {
 
           let nomeFicheiro = 'Termo_Responsabilidade_Guimaraes.md';
           let tituloDoc = 'Termo de Responsabilidade e Seguro Obrigatório';
-          let caminhoFicheiro = join(import.meta.dirname, RAIZ_DADOS, '03_prova_desportiva/termo_responsabilidade.md');
+          let caminhoFicheiro = join(RAIZ_DADOS, '03_prova_desportiva/termo_responsabilidade.md');
 
           if (/ap[oó]lice|seguro/i.test(m.texto)) {
             nomeFicheiro = 'Apolice_Seguro_Prova_Desportiva.md';
             tituloDoc = 'Certificado e Apólice de Seguro Obrigatório (DL 10/2009)';
-            caminhoFicheiro = join(import.meta.dirname, RAIZ_DADOS, '03_prova_desportiva/apolice_seguro_prova_desportiva.md');
+            caminhoFicheiro = join(RAIZ_DADOS, '03_prova_desportiva/apolice_seguro_prova_desportiva.md');
           } else if (servicoAtivo === 'ocupacao-espaco-publico-esplanada' || /esplanada|fachada|planta|croquis|certid[aã]o|mobili[aá]rio/i.test(m.texto)) {
             if (/planta|croquis|desenho|implanta/i.test(m.texto)) {
               nomeFicheiro = 'Planta_Cotada_Esplanada_Oliveira.md';
               tituloDoc = 'Planta de Implantação e Croquis Cotado da Esplanada';
-              caminhoFicheiro = join(import.meta.dirname, RAIZ_DADOS, '01_esplanada/planta_cotada_esplanada_oliveira.md');
+              caminhoFicheiro = join(RAIZ_DADOS, '01_esplanada/planta_cotada_esplanada_oliveira.md');
             } else if (/certid[aã]o|empresa|sociedade/i.test(m.texto)) {
               nomeFicheiro = 'Certidao_Comercial_Casa_Joaquim.md';
               tituloDoc = 'Certidão Comercial Permanente (Casa Joaquim)';
-              caminhoFicheiro = join(import.meta.dirname, RAIZ_DADOS, '01_esplanada/certidao_comercial_casa_joaquim.md');
+              caminhoFicheiro = join(RAIZ_DADOS, '01_esplanada/certidao_comercial_casa_joaquim.md');
             } else if (/fachada|frente|largura/i.test(m.texto)) {
               nomeFicheiro = 'Declaracao_Medicao_Fachada_8m.md';
               tituloDoc = 'Declaração de Medição da Fachada (8 Metros)';
-              caminhoFicheiro = join(import.meta.dirname, RAIZ_DADOS, '01_esplanada/medicao_fachada_8m.md');
+              caminhoFicheiro = join(RAIZ_DADOS, '01_esplanada/medicao_fachada_8m.md');
             } else if (/mobili[aá]rio|cadeira|mesa/i.test(m.texto)) {
               nomeFicheiro = 'Termo_Conformidade_Mobiliario.md';
               tituloDoc = 'Termo de Responsabilidade do Mobiliário de Esplanada';
-              caminhoFicheiro = join(import.meta.dirname, RAIZ_DADOS, '01_esplanada/termo_conformidade_mobiliario.md');
+              caminhoFicheiro = join(RAIZ_DADOS, '01_esplanada/termo_conformidade_mobiliario.md');
             } else {
               nomeFicheiro = 'Formulario_Modelo_OVP_SO.md';
               tituloDoc = 'Formulário Modelo OVP-SO (Ocupação de Espaço Público)';
-              caminhoFicheiro = join(import.meta.dirname, RAIZ_DADOS, '01_esplanada/minuta_modelo_ovp_so.md');
+              caminhoFicheiro = join(RAIZ_DADOS, '01_esplanada/minuta_modelo_ovp_so.md');
             }
           } else if (servicoAtivo === 'pedido-informacao-previa-urbanismo' || /pdm|urbanismo|terreno|pip/i.test(m.texto)) {
             nomeFicheiro = 'Minuta_PIP_Urbanismo_RJUE.md';
             tituloDoc = 'Minuta de Pedido de Informação Prévia (Art. 14.º RJUE)';
-            caminhoFicheiro = join(import.meta.dirname, RAIZ_DADOS, '02_urbanismo_pdm/minuta_modelo_pip_rjue.md');
+            caminhoFicheiro = join(RAIZ_DADOS, '02_urbanismo_pdm/minuta_modelo_pip_rjue.md');
           }
 
           const conteudoDoc = await fs.readFile(caminhoFicheiro, 'utf-8').catch(() => `# ${tituloDoc}\n\nDocumento oficial.`);

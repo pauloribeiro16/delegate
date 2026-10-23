@@ -1,6 +1,13 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "cleanUrls": true,
+  "functions": {
+    "prototipo/api/**/*.ts": {
+      "memory": 1024,
+      "maxDuration": 30,
+      "includeFiles": "../{data,registo}/**"
+    }
+  },
   "rewrites": [
     { "source": "/", "destination": "/site" },
     { "source": "/painel", "destination": "/site/delegate-panel" },
@@ -10,6 +17,18 @@
     { "source": "/autenticacao", "destination": "/site/cmd.html" },
     { "source": "/design-system", "destination": "/design-system/index.html" },
     { "source": "/assets/:ficheiro", "destination": "/site/assets/:ficheiro" },
-    { "source": "/legendas.json", "destination": "/site/legendas.json" }
-  ]
+    { "source": "/legendas.json", "destination": "/site/legendas.json" },
+    { "source": "/api/eventos/stream", "destination": "/prototipo/api/eventos" },
+    { "source": "/api/telegram", "destination": "/prototipo/api/telegram" },
+    { "source": "/api/canal/:peca", "destination": "/prototipo/api/canal/:peca" },
+    { "source": "/api/consola/:peca", "destination": "/prototipo/api/consola/:peca" },
+    { "source": "/api/cmd/confirmar", "destination": "/prototipo/api/cmd/confirmar" },
+    { "source": "/api/porta/:peca", "destination": "/prototipo/api/porta/:peca" },
+    { "source": "/api/eventos", "destination": "/prototipo/api/eventos" },
+    { "source": "/api/saude", "destination": "/prototipo/api/saude" }
+  ],
+  "env": {
+    "SESSAO": "demo",
+    "PERMITIR_HOSTS_PUBLICO": "1"
+  }
 }

@@ -27,6 +27,7 @@ export async function criarServidorPorta(opcoes: OpcoesPorta = {}): Promise<{
   servidor: Server;
   mcp: McpServer;
   catalogo: CatalogoPorta;
+  processarPedido: (req: IncomingMessage, res: ServerResponse) => Promise<void>;
   fechar(): Promise<void>;
 }> {
   const catalogo = opcoes.catalogo ?? new CatalogoPorta();
@@ -589,7 +590,7 @@ export async function criarServidorPorta(opcoes: OpcoesPorta = {}): Promise<{
 
   const mcpHandler = createMcpHandler(() => mcp.server);
 
-  const servidor = createServer(async (req: IncomingMessage, res: ServerResponse) => {
+  const processarPedido = async (req: IncomingMessage, res: ServerResponse) => {
     // Cabeçalhos CORS para permitir acesso local a partir do Observatório e Consola
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
@@ -603,7 +604,8 @@ export async function criarServidorPorta(opcoes: OpcoesPorta = {}): Promise<{
 
     // Protecção contra DNS rebinding (ADR-020)
     const host = req.headers.host?.split(':')[0]?.toLowerCase() ?? '';
-    if (host !== 'localhost' && host !== '127.0.0.1' && host !== '::1') {
+    const publico = process.env.PERMITIR_HOSTS_PUBLICO === '1';
+    if (!publico && host !== 'localhost' && host !== '127.0.0.1' && host !== '::1') {
       res.writeHead(403, { 'Content-Type': 'text/plain' });
       res.end('Acesso proibido: host inválido');
       return;
@@ -906,12 +908,17 @@ export async function criarServidorPorta(opcoes: OpcoesPorta = {}): Promise<{
 
     res.writeHead(404, { 'Content-Type': 'text/plain' });
     res.end('Não encontrado na Porta');
+  };
+
+  const servidor = createServer((req: IncomingMessage, res: ServerResponse) => {
+    void processarPedido(req, res);
   });
 
   return {
     servidor,
     mcp,
     catalogo,
+    processarPedido,
     async fechar() {
       await mcpHandler.close?.();
       await new Promise<void>((r) => servidor.close(() => r()));

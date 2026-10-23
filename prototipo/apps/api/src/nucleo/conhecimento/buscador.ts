@@ -12,6 +12,7 @@
  */
 import { readFileSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
+import { raizPrototipo } from '../dados-raiz.ts';
 import {
   choice,
   criarClienteJev,
@@ -64,7 +65,7 @@ export interface ResultadoConhecimento {
   precisaEsclarecimento?: boolean;
 }
 
-const PASTA_DADOS = join(import.meta.dirname, '..', '..', '..', '..', '..', 'data', 'conhecimento');
+const PASTA_DADOS = join(raizPrototipo(), 'data', 'conhecimento');
 
 const STOPWORDS_MUNICIPAIS = new Set([
   'camara',

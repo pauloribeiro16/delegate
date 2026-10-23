@@ -410,6 +410,25 @@ export class ArmazenamentoSU {
     p.atualizadoEm = agora;
     return p;
   }
+
+  /** Carregar os processos de uma base externa (modo alojado, DATABASE_URL). */
+  async carregar(pool: { query: (sql: string) => Promise<{ rows: any[] }> }): Promise<void> {
+    await pool.query('CREATE TABLE IF NOT EXISTS su_simulado.processos (numero TEXT PRIMARY KEY, dados JSONB NOT NULL)');
+    const { rows } = await pool.query('SELECT dados FROM su_simulado.processos ORDER BY numero');
+    for (const r of rows) {
+      if (r.dados?.numero) this.#processos.set(r.dados.numero, r.dados);
+    }
+  }
+
+  /** Gravar todos os processos (flush após pedidos que os alteram; escala de demo). */
+  async persistir(pool: { query: (sql: string, valores?: unknown[]) => Promise<unknown> }): Promise<void> {
+    for (const p of this.#processos.values()) {
+      await pool.query(
+        'INSERT INTO su_simulado.processos (numero, dados) VALUES ($1, $2) ON CONFLICT (numero) DO UPDATE SET dados = EXCLUDED.dados',
+        [p.numero, JSON.stringify(p)],
+      );
+    }
+  }
 }
 
 export const servicosUrbanos = new ArmazenamentoSU();

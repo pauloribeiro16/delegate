@@ -113,6 +113,9 @@ const canalNulo: CanalGrammy = {
   async aEscrever() {},
   async parar() {},
   _aoReceber() {},
+  _bot() {
+    throw new Error('Telegram desativado (a correr com CANAL_WEB=1, sem token)');
+  },
 };
 const canalTelegram: CanalGrammy = token ? criarCanalGrammy(token) : canalNulo;
 

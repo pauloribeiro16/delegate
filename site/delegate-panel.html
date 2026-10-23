@@ -714,7 +714,9 @@ if (window.self !== window.top) document.body.classList.add('em-iframe');
 
 /* ── Configuração ─────────────────────────────────────────────────────── */
 const parametros = new URLSearchParams(location.search);
-const NUCLEO = (parametros.get('nucleo') || 'http://localhost:4000').replace(/\/$/, '');
+// Sem ?nucleo=, vale a mesma origem: no portátil é o núcleo na porta 4000 a
+// servir a página; no Vercel são as funções /api do próprio domínio.
+const NUCLEO = (parametros.get('nucleo') || '').replace(/\/$/, '');
 const DESDE_INICIAL = Number(parametros.get('desde') || 0) || 0;
 /* Modo operador (?operador=1): espelho completo de todas as conversas, só leitura.
    Sem ele, o painel é uma sessão pessoal: liga-se ao Telegram por QR e vê só a
@@ -817,6 +819,7 @@ const estado = {
   pessoaSessao: null,
   sincronizada: false,
   sondaLigacao: null,
+  sondaEventos: null,
 
   turnos: [],
   turnoAberto: new Map(),
@@ -927,6 +930,36 @@ function ligar() {
   // Na sessão pessoal, o núcleo só entrega o que é desta pessoa — as conversas
   // dos outros nunca chegam a este browser.
   const filtroPessoa = estado.pessoaSessao ? `&pessoa=${encodeURIComponent(estado.pessoaSessao)}` : '';
+
+  // Alojado (Vercel): sem SSE long-lived num runtime serverless — o fluxo vem
+  // por pergunta-resposta a /api/eventos, pelo mesmo caminho de aplicação.
+  if (!/^(localhost|127\.0\.0\.1)$/.test(location.hostname) && !parametros.get('nucleo')) {
+    if (estado.sondaEventos) clearInterval(estado.sondaEventos);
+    mostrarLigacao('ligar');
+    let falhas = 0;
+    const sondar = async () => {
+      try {
+        const r = await fetch(`${NUCLEO}/api/eventos?desde=${estado.ultimoSeq}${filtroPessoa}`);
+        if (!r.ok) throw new Error(`o núcleo respondeu ${r.status}`);
+        const dados = await r.json();
+        if (!estado.ligadoEm) estado.ligadoEm = Date.now();
+        falhas = 0;
+        if ((dados.eventos ?? []).length) estado.ultimoEventoEm = Date.now();
+        mostrarLigacao();
+        for (const ev of dados.eventos ?? []) {
+          estado.recebidosNestaLigacao += 1;
+          estado.processamento = estado.processamento.then(() => receber(ev)).catch((e) => console.error(e));
+        }
+      } catch {
+        falhas += 1;
+        if (falhas >= 3) mostrarLigacao('erro');
+      }
+    };
+    sondar();
+    estado.sondaEventos = setInterval(sondar, 1500);
+    return;
+  }
+
   const fonte = new EventSource(`${NUCLEO}/eventos/stream?desde=${estado.ultimoSeq}${filtroPessoa}`);
   estado.ligacao = fonte;
   estado.recebidosNestaLigacao = 0;
