@@ -1,8 +1,13 @@
 /**
- * A base de dados do núcleo: um PostgreSQL embutido, com esquemas separados.
+ * A base de dados do núcleo.
  *
- * Os esquemas simulam bases isoladas. É isso que impede que uma rota simulada
- * sirva de atalho para outra — e é por isso que existem.
+ * Dois modos:
+ *  - Local (omissão): PostgreSQL embutido, com esquemas separados. Os esquemas
+ *    simulam bases isoladas — é isso que impede que uma rota simulada sirva de
+ *    atalho para outra.
+ *  - Alojado (quando existe DATABASE_URL): um PostgreSQL externo (ex.: Neon no
+ *    Vercel), ligação por SSL. É o modo das funções serverless — o mesmo
+ *    esquema, sem embutido.
  */
 import EmbeddedPostgres from 'embedded-postgres';
 import pg from 'pg';
@@ -17,9 +22,12 @@ export const PORTAS = {
 export const SESSAO = process.env.SESSAO ?? 'demo';
 const SENHA = 'delegado';
 
+/** URL de uma base externa (Neon/Vercel Postgres). Presente = modo alojado. */
+export const URL_BASE_EXTERNA = process.env.DATABASE_URL?.trim() || null;
+
 export interface Base {
-  escrita: pg.Client;
-  novaLigacao(): pg.Client;
+  escrita: pg.Client | pg.Pool;
+  novaLigacao(): pg.Client | pg.Pool;
   escutar(): Promise<pg.Client>;
   fechar(): Promise<void>;
 }
@@ -67,6 +75,44 @@ export interface OpcoesBase {
 }
 
 /**
+ * Ligação a uma base externa (DATABASE_URL). Um pool, porque cada função
+ * serverless partilha a instância entre pedidos e o SSL é obrigatório no Neon.
+ * O esquema é o mesmo do modo local e cria-se de forma idempotente.
+ */
+async function abrirBaseExterna(url: string): Promise<Base> {
+  const ssl = url.includes('sslmode=') ? {} : { ssl: { rejectUnauthorized: false } };
+  const pool = new pg.Pool({ connectionString: url, max: 5, ...ssl });
+  pool.on('error', (err: Error) => {
+    console.warn('⚠ aviso no pool pg externo:', err.message);
+  });
+
+  const escrita = await pool.connect();
+  try {
+    for (const instrucao of SQL) await escrita.query(instrucao);
+  } finally {
+    escrita.release();
+  }
+
+  let clienteEscuta: pg.Client | null = null;
+  return {
+    escrita: pool,
+    novaLigacao: () => pool,
+    async escutar() {
+      // Uma ligação só para escutar. Nunca do pool: o pool fecha ligações e a
+      // subscrição vai com elas.
+      if (!clienteEscuta || clienteEscuta.connection === null) {
+        clienteEscuta = new pg.Client({ connectionString: url, ...ssl });
+        await clienteEscuta.connect();
+      }
+      return clienteEscuta;
+    },
+    async fechar() {
+      await pool.end().catch(() => {});
+    },
+  };
+}
+
+/**
  * Arranca a base e devolve as ligações de que o núcleo precisa.
  *
  * A pasta e o porto são parâmetros porque cada processo tem de ter a sua: dois
@@ -74,6 +120,8 @@ export interface OpcoesBase {
  * separa o núcleo da Porta e dos sistemas simulados.
  */
 export async function abrirBase(opcoes: OpcoesBase = {}): Promise<Base> {
+  if (URL_BASE_EXTERNA) return abrirBaseExterna(URL_BASE_EXTERNA);
+
   const pasta = opcoes.pasta ?? resolve(import.meta.dirname, '../../../../.pgdata');
   const porta = opcoes.porta ?? PORTAS.nucleo;
 

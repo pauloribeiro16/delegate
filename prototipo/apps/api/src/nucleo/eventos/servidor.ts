@@ -24,7 +24,9 @@ const CABECALHOS = {
   'X-Accel-Buffering': 'no',
 };
 
-const WEB = new URL('../../../../web/', import.meta.url);
+// As páginas do projeto vivem na pasta `site/` na raiz do repositório
+// (mesma convenção do alojamento: o Vercel serve-as de lá).
+const WEB = new URL('../../../../../../site/', import.meta.url);
 
 const MIMES: Record<string, string> = {
   '.html': 'text/html; charset=utf-8',
@@ -40,15 +42,17 @@ const MIMES: Record<string, string> = {
 };
 
 const ESTATICOS: Record<string, { ficheiro: string; tipo: string }> = {
-  '/': { ficheiro: '../../../index.html', tipo: 'text/html; charset=utf-8' },
-  '/painel': { ficheiro: '../../../reference-docs/delegate-panel.html', tipo: 'text/html; charset=utf-8' },
-  '/painel.html': { ficheiro: '../../../reference-docs/delegate-panel.html', tipo: 'text/html; charset=utf-8' },
-  '/consola': { ficheiro: '../../../reference-docs/delegate-consola-camara-v2.html', tipo: 'text/html; charset=utf-8' },
-  '/consola.html': { ficheiro: '../../../reference-docs/delegate-consola-camara-v2.html', tipo: 'text/html; charset=utf-8' },
-  '/consola-camara': { ficheiro: '../../../reference-docs/delegate-consola-camara-v2.html', tipo: 'text/html; charset=utf-8' },
-  '/consola-camara.html': { ficheiro: '../../../reference-docs/delegate-consola-camara.html', tipo: 'text/html; charset=utf-8' },
-  '/consola-v2': { ficheiro: '../../../reference-docs/delegate-consola-camara-v2.html', tipo: 'text/html; charset=utf-8' },
-  '/consola-v2.html': { ficheiro: '../../../reference-docs/delegate-consola-camara-v2.html', tipo: 'text/html; charset=utf-8' },
+  '/': { ficheiro: 'index.html', tipo: 'text/html; charset=utf-8' },
+  '/painel': { ficheiro: 'delegate-panel.html', tipo: 'text/html; charset=utf-8' },
+  '/painel.html': { ficheiro: 'delegate-panel.html', tipo: 'text/html; charset=utf-8' },
+  '/consola': { ficheiro: 'delegate-consola-camara-v2.html', tipo: 'text/html; charset=utf-8' },
+  '/consola.html': { ficheiro: 'delegate-consola-camara-v2.html', tipo: 'text/html; charset=utf-8' },
+  '/consola-camara': { ficheiro: 'delegate-consola-camara-v2.html', tipo: 'text/html; charset=utf-8' },
+  '/consola-camara.html': { ficheiro: 'delegate-consola-camara.html', tipo: 'text/html; charset=utf-8' },
+  '/consola-v1': { ficheiro: 'delegate-consola-camara.html', tipo: 'text/html; charset=utf-8' },
+  '/consola-v1.html': { ficheiro: 'delegate-consola-camara.html', tipo: 'text/html; charset=utf-8' },
+  '/consola-v2': { ficheiro: 'delegate-consola-camara-v2.html', tipo: 'text/html; charset=utf-8' },
+  '/consola-v2.html': { ficheiro: 'delegate-consola-camara-v2.html', tipo: 'text/html; charset=utf-8' },
   '/cmd': { ficheiro: 'cmd.html', tipo: 'text/html; charset=utf-8' },
   '/cmd.html': { ficheiro: 'cmd.html', tipo: 'text/html; charset=utf-8' },
   '/autenticacao': { ficheiro: 'cmd.html', tipo: 'text/html; charset=utf-8' },

@@ -12,7 +12,7 @@
     "nucleo": "tsx --env-file=.env apps/api/src/nucleo/principal.ts",
     "porta": "tsx apps/api/src/porta/principal.ts",
     "provar:postgres": "tsx scripts/provar-postgres.ts",
-    "legendas": "cp packages/eventos/src/legendas.json apps/web/legendas.json",
+    "legendas": "cp packages/eventos/src/legendas.json ../site/legendas.json",
     "test": "vitest run && npm run t:texto",
     "t:testes": "vitest run && npm run t:texto",
     "registo:validar": "tsx scripts/validar-registo.ts",

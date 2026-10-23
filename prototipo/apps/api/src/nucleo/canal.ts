@@ -170,6 +170,8 @@ export interface CanalGrammy extends Canal {
   ): Promise<void>;
   parar(): Promise<void>;
   _aoReceber(f: AoReceber): void;
+  /** O bot cru, para o modo webhook (Vercel) processar atualizações. */
+  _bot(): Bot;
 }
 
 export function criarCanalGrammy(token: string): CanalGrammy {
@@ -380,6 +382,11 @@ export function criarCanalGrammy(token: string): CanalGrammy {
     /** Só para o ponto de entrada de testes. */
     _aoReceber(f: AoReceber) {
       aoReceber = f;
+    },
+
+    /** O bot cru, para o modo webhook (Vercel) processar atualizações. */
+    _bot() {
+      return bot;
     },
   };
 }

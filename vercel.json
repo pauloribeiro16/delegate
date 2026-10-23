@@ -2,11 +2,14 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "cleanUrls": true,
   "rewrites": [
-    { "source": "/", "destination": "/index.html" },
-    { "source": "/painel", "destination": "/reference-docs/delegate-panel" },
-    { "source": "/consola", "destination": "/reference-docs/delegate-consola-camara-v2" },
-    { "source": "/consola-v1", "destination": "/reference-docs/delegate-consola-camara" },
+    { "source": "/", "destination": "/site/index.html" },
+    { "source": "/painel", "destination": "/site/delegate-panel" },
+    { "source": "/consola", "destination": "/site/delegate-consola-camara-v2" },
+    { "source": "/consola-v1", "destination": "/site/delegate-consola-camara" },
+    { "source": "/cmd", "destination": "/site/cmd.html" },
+    { "source": "/autenticacao", "destination": "/site/cmd.html" },
     { "source": "/design-system", "destination": "/design-system/index.html" },
-    { "source": "/assets/:ficheiro", "destination": "/reference-docs/assets/:ficheiro" }
+    { "source": "/assets/:ficheiro", "destination": "/site/assets/:ficheiro" },
+    { "source": "/legendas.json", "destination": "/site/legendas.json" }
   ]
 }
