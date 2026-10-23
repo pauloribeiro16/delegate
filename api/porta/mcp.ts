@@ -9,13 +9,7 @@
  *
  * O estado dos processos do SU persiste na base alojada (su_simulado.processos).
  */
-import pg from 'pg';
 import type { IncomingMessage, ServerResponse } from 'node:http';
-import { criarServidorPorta } from '../../prototipo/apps/api/src/porta/servidor.ts';
-import { CatalogoPorta } from '../../prototipo/apps/api/src/porta/servicos.ts';
-import { Registo } from '../../prototipo/apps/api/src/nucleo/eventos/registo.ts';
-import { servicosUrbanos } from '../../prototipo/apps/api/src/su/processos.ts';
-import { raizPrototipo } from '../../prototipo/apps/api/src/nucleo/dados-raiz.ts';
 import { join } from 'node:path';
 
 export const config = { runtime: 'nodejs', maxDuration: 60 };
@@ -32,6 +26,13 @@ function porta(): Promise<InstanciaPorta> {
     globalPorta.__portaInstancia = (async () => {
       const url = process.env.DATABASE_URL?.trim();
       if (!url) throw new Error('Falta DATABASE_URL — a Porta alojada corre sobre a base externa');
+      // Importações preguiçosas: o erro real sai como JSON, não como falha cega.
+      const { criarServidorPorta } = await import('../../prototipo/apps/api/src/porta/servidor.ts');
+      const { CatalogoPorta } = await import('../../prototipo/apps/api/src/porta/servicos.ts');
+      const { Registo } = await import('../../prototipo/apps/api/src/nucleo/eventos/registo.ts');
+      const { servicosUrbanos } = await import('../../prototipo/apps/api/src/su/processos.ts');
+      const { raizPrototipo } = await import('../../prototipo/apps/api/src/nucleo/dados-raiz.ts');
+      const pg = (await import('pg')).default;
       const ssl = url.includes('sslmode=') ? {} : { ssl: { rejectUnauthorized: false } };
       const pool = new pg.Pool({ connectionString: url, max: 3, ...ssl });
       pool.on('error', (err: Error) => console.warn('⚠ aviso no pool pg da Porta:', err.message));

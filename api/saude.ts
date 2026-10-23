@@ -3,7 +3,6 @@
  *   GET /api/saude — diz se o kernel arranca e se os dados estão no sítio.
  */
 import { kernel, json, preflight } from './_kernel.ts';
-import { raizPrototipo } from '../prototipo/apps/api/src/nucleo/dados-raiz.ts';
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 
@@ -11,6 +10,7 @@ export const config = { runtime: 'nodejs', maxDuration: 30 };
 
 export default async function (req: Request): Promise<Response> {
   if (req.method === 'OPTIONS') return preflight();
+  const { raizPrototipo } = await import('../prototipo/apps/api/src/nucleo/dados-raiz.ts');
   const raiz = raizPrototipo();
   const dados = {
     conhecimento: existsSync(join(raiz, 'data', 'conhecimento', 'indice.json')),

@@ -5,19 +5,21 @@
  * pedidos (o runtime mantém a instância quente). A base é sempre externa:
  * sem DATABASE_URL não há como correr aqui — o modo embutido é só local.
  */
-import { abrirBase, URL_BASE_EXTERNA } from '../prototipo/apps/api/src/nucleo/bd.ts';
-import { criarKernel, type Kernel } from '../prototipo/apps/api/src/nucleo/kernel.ts';
+const globalKernel = globalThis as unknown as { __kernelDelegate?: Promise<any> };
 
-const globalKernel = globalThis as unknown as { __kernelDelegate?: Promise<Kernel> };
-
-export function kernel(): Promise<Kernel> {
+export function kernel(): Promise<any> {
   if (!globalKernel.__kernelDelegate) {
     globalKernel.__kernelDelegate = (async () => {
-      if (!URL_BASE_EXTERNA) {
+      if (!process.env.DATABASE_URL?.trim()) {
         throw new Error(
           'Falta DATABASE_URL no ambiente — as funções do Vercel correm apenas em modo alojado (Neon/Vercel Postgres)',
         );
       }
+      // Importações preguiçosas a propósito: um erro a carregar o grafo do
+      // núcleo sai como JSON desta função, não como FUNCTION_INVOCATION_FAILED
+      // sem explicação.
+      const { abrirBase } = await import('../prototipo/apps/api/src/nucleo/bd.ts');
+      const { criarKernel } = await import('../prototipo/apps/api/src/nucleo/kernel.ts');
       const k = await criarKernel({
         base: await abrirBase(),
         tokenTelegram: process.env.TELEGRAM_BOT_TOKEN?.trim() ?? null,
