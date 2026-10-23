@@ -4,8 +4,8 @@
  * Executa avaliação semântica local com 0ms de latência e 100% de previsibilidade,
  * garantindo resiliência total mesmo quando a rede ou a chave da API não estiverem disponíveis.
  */
-import type { ContextoDecisao, FocoServico, ResultadoDecisao, CategoriaIntencao } from './tipos.ts';
-import type { NivelMandato } from '../mandatos/mandatos.ts';
+import type { ContextoDecisao, FocoServico, ResultadoDecisao, CategoriaIntencao } from './tipos.js';
+import type { NivelMandato } from '../mandatos/mandatos.js';
 
 export class AvaliadorLocal {
   static mapearCategoria(servico: string): CategoriaIntencao {

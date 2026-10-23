@@ -8,7 +8,7 @@
 import { readdir, readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { parse } from 'yaml';
-import { Servico, type Servico as TipoServico } from '../../../../registo/esquema.ts';
+import { Servico, type Servico as TipoServico } from '../../../../registo/esquema.js';
 
 export interface ResumoServico {
   id: string;

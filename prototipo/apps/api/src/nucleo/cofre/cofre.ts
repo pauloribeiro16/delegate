@@ -9,9 +9,9 @@
  *  - O Guardião de Contexto constrói o pacote mínimo (PAC-xxxx) separando o que
  *    é partilhado do que NÃO é partilhado (nao_partilha).
  */
-import type { Registo } from '../eventos/registo.ts';
-import { cifrarDados, decifrarDados, derivarChavePessoa, type ConteudoCifrado } from './cifra.ts';
-import type { ServicoChavesCofre } from './servico-chaves.ts';
+import type { Registo } from '../eventos/registo.js';
+import { cifrarDados, decifrarDados, derivarChavePessoa, type ConteudoCifrado } from './cifra.js';
+import type { ServicoChavesCofre } from './servico-chaves.js';
 
 export type CamadaCofre = 'identidade' | 'provas' | 'intencoes';
 export type SensibilidadeItem = 'normal' | 'sensivel';

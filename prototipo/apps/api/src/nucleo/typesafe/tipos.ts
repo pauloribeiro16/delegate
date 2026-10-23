@@ -4,7 +4,7 @@
  * Contratos de tipos para julgamentos rápidos, intenções municipais,
  * enquadramento de mandatos e contexto conversacional.
  */
-import type { NivelMandato } from '../mandatos/mandatos.ts';
+import type { NivelMandato } from '../mandatos/mandatos.js';
 
 export type TipoComportamento = 'responder' | 'abster' | 'encaminhar' | 'recusar';
 export type CategoriaIntencao = 'catalogo' | 'conhecimento_d0' | 'sem_fonte' | 'fora_competencia' | 'juizo_tecnico' | 'adversarial' | 'geral';

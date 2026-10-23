@@ -6,7 +6,7 @@
  * É esta cadeia que é a auditoria (ADR-015). Não há tabela separada.
  */
 import { createHash, randomUUID } from 'node:crypto';
-import { Envelope, type Pedido } from './envelope.ts';
+import { Envelope, type Pedido } from './envelope.js';
 
 /**
  * Ordena as chaves em profundidade, para que o mesmo conteúdo dê sempre o

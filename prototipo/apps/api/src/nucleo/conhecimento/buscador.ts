@@ -12,7 +12,7 @@
  */
 import { readFileSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
-import { raizPrototipo } from '../dados-raiz.ts';
+import { raizPrototipo } from '../dados-raiz.js';
 import {
   choice,
   criarClienteJev,
@@ -20,8 +20,8 @@ import {
   type ChoiceResponse,
   type ClienteJev,
   type NoulResponse,
-} from '../typesafe/jev-openrouter.ts';
-import type { Botao } from '../canal.ts';
+} from '../typesafe/jev-openrouter.js';
+import type { Botao } from '../canal.js';
 
 export interface EntradaIndice {
   id: string;

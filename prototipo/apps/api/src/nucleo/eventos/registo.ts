@@ -13,7 +13,7 @@ import {
   type Envelope,
   type EventoGuardado,
   type Pedido,
-} from '../../../../../packages/eventos/src/index.ts';
+} from '../../../../../packages/eventos/src/index.js';
 
 const COLUNAS = `v, id, ts, tipo, origem, sessao, missao, pessoa, ator, simulacao, dados, hash_anterior, hash`;
 

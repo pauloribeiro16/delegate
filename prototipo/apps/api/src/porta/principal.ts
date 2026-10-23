@@ -7,8 +7,8 @@
  *   npm run porta
  */
 import pg from 'pg';
-import { criarServidorPorta, PORTA_HTTP_PADRAO } from './servidor.ts';
-import { Registo } from '../nucleo/eventos/registo.ts';
+import { criarServidorPorta, PORTA_HTTP_PADRAO } from './servidor.js';
+import { Registo } from '../nucleo/eventos/registo.js';
 
 const PORTA_HTTP = Number(process.env.PORTA_HTTP_PORT ?? PORTA_HTTP_PADRAO);
 const BD_PORTA = Number(process.env.PGPORT ?? 5433);

@@ -7,13 +7,13 @@
  * Passo 3: Verificação de conformidade regulamentar do passeio (>= 2,00m);
  * Passo 4: Conclusão do pacote instrutório mínimo no Cofre e transição para D3 (CMD).
  */
-import type { CofreDigital } from '../cofre/cofre.ts';
-import type { GestorMandatos } from '../mandatos/mandatos.ts';
-import type { OrquestradorMissoes } from './missao.ts';
-import type { Registo } from '../eventos/registo.ts';
-import type { CanalGrammy, Botao } from '../canal.ts';
+import type { CofreDigital } from '../cofre/cofre.js';
+import type { GestorMandatos } from '../mandatos/mandatos.js';
+import type { OrquestradorMissoes } from './missao.js';
+import type { Registo } from '../eventos/registo.js';
+import type { CanalGrammy, Botao } from '../canal.js';
 
-import type { RedatorOpenRouter } from '../henriques/redator-openrouter.ts';
+import type { RedatorOpenRouter } from '../henriques/redator-openrouter.js';
 
 export type EstadoD2 = 'aguarda_morada' | 'aguarda_estabelecimento' | 'aguarda_mesas' | 'aguarda_passeio' | 'concluido';
 
@@ -98,7 +98,7 @@ export function extrairEstabelecimentoEMorada(texto: string): {
   return { estabelecimento, morada };
 }
 
-import { validarPertenceGuimaraes } from '../validadores/guimaraes-territorio.ts';
+import { validarPertenceGuimaraes } from '../validadores/guimaraes-territorio.js';
 
 export class GestorFluxoD2 {
   readonly #cofre: CofreDigital;

@@ -2,7 +2,7 @@
  * Confirmação da Chave Móvel Digital (Vercel).
  *   POST /api/cmd/confirmar  { token_cmd, ... }
  */
-import { kernel, json, corpoJson, preflight } from '../_kernel.ts';
+import { kernel, json, corpoJson, preflight } from '../_kernel.js';
 
 export const config = { maxDuration: 30 };
 

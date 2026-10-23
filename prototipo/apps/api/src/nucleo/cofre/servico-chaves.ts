@@ -9,8 +9,8 @@
  *   - cofre.chave.libertada
  *   - cofre.chave.recolhida
  */
-import type { Registo } from '../eventos/registo.ts';
-import { derivarChavePessoa } from './cifra.ts';
+import type { Registo } from '../eventos/registo.js';
+import { derivarChavePessoa } from './cifra.js';
 
 export interface ConcessaoChave {
   chave: Buffer;

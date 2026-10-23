@@ -4,7 +4,7 @@
  * Aproveita o pedido para despachar notificações do SU ao cidadão
  * (sem LISTEN num runtime serverless, quem serve faz o despacho).
  */
-import { kernel, json, preflight } from '../_kernel.ts';
+import { kernel, json, preflight } from '../_kernel.js';
 
 export const config = { maxDuration: 30 };
 

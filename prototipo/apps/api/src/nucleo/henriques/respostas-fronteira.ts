@@ -8,9 +8,9 @@
  * 3. Assuntos fora da competência autárquica (Vimágua, Administração Central / IRN);
  * 4. Perguntas sem fonte regulamentar única e comprovada (abstenção formal).
  */
-import type { Registo } from '../eventos/registo.ts';
-import type { ResultadoDecisao } from '../typesafe/tipos.ts';
-import type { RespostaHenriques } from './henriques.ts';
+import type { Registo } from '../eventos/registo.js';
+import type { ResultadoDecisao } from '../typesafe/tipos.js';
+import type { RespostaHenriques } from './henriques.js';
 
 export async function tratarAdversarial(
   pessoa: string,

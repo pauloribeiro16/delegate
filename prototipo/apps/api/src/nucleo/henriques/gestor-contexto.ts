@@ -7,7 +7,7 @@
  * 3. Extração e Compactação de Factos Estruturados (Entidades vs. Texto Bruto);
  * 4. Deteção de Ruptura / Mudança de Contexto (Context Shift Detection).
  */
-import type { ContextoDecisao } from '../typesafe/tipos.ts';
+import type { ContextoDecisao } from '../typesafe/tipos.js';
 
 export interface FactoExtraido {
   campo: string;

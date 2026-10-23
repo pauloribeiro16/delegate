@@ -9,8 +9,8 @@
  * Emite o evento:
  *   - politica.decisao
  */
-import type { Registo } from '../eventos/registo.ts';
-import type { GestorMandatos, NivelMandato } from '../mandatos/mandatos.ts';
+import type { Registo } from '../eventos/registo.js';
+import type { GestorMandatos, NivelMandato } from '../mandatos/mandatos.js';
 
 export type ResultadoPolitica = 'permitir' | 'confirmar' | 'bloquear';
 

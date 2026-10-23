@@ -5,12 +5,12 @@
  * aplica redação com OpenRouter, valida rigorosamente os factos e emite
  * os eventos de auditoria com citação legal e data de consulta obrigatórias.
  */
-import type { Registo } from '../eventos/registo.ts';
-import type { RedatorOpenRouter } from './redator-openrouter.ts';
-import { VerificadorRegra } from './verificador.ts';
-import type { RespostaHenriques } from './henriques.ts';
-import type { Servico as TipoServico } from '../../../../../registo/esquema.ts';
-import type { ResultadoDecisao } from '../typesafe/tipos.ts';
+import type { Registo } from '../eventos/registo.js';
+import type { RedatorOpenRouter } from './redator-openrouter.js';
+import { VerificadorRegra } from './verificador.js';
+import type { RespostaHenriques } from './henriques.js';
+import type { Servico as TipoServico } from '../../../../../registo/esquema.js';
+import type { ResultadoDecisao } from '../typesafe/tipos.js';
 
 export async function gerarRespostaCatalogo(params: {
   servicoId: string;

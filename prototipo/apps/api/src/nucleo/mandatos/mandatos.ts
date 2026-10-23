@@ -12,7 +12,7 @@
  *   - D3: Agir com Confirmação (submeter formalmente mediante confirmação da pessoa)
  *   - D4: Agir dentro de regras predefinidas (indisponível em R0)
  */
-import type { Registo } from '../eventos/registo.ts';
+import type { Registo } from '../eventos/registo.js';
 
 export type NivelMandato = 'D0' | 'D1' | 'D2' | 'D3' | 'D4';
 export type EstadoMandato = 'ativo' | 'revogado' | 'expirado';

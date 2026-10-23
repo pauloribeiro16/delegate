@@ -6,9 +6,9 @@
  * nem fecha a porta com abstenção: identifica as intenções municipais mais prováveis
  * e devolve uma pergunta pedagógica de clarificação com botões de seleção rápida.
  */
-import type { RespostaHenriques } from './henriques.ts';
-import type { Registo } from '../eventos/registo.ts';
-import type { ContextoDecisao } from '../typesafe/tipos.ts';
+import type { RespostaHenriques } from './henriques.js';
+import type { Registo } from '../eventos/registo.js';
+import type { ContextoDecisao } from '../typesafe/tipos.js';
 
 export interface CasoAmbiguidade {
   padrao: RegExp;

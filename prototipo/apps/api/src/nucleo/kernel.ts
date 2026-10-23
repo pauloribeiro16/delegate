@@ -7,24 +7,24 @@
  * cérebro. O canal faz fan-out — regista no barramento (painel, auditoria) e
  * envia ao Telegram (best-effort) — e o tratador é um só.
  */
-import { criarCanalGrammy, type CanalGrammy, type Botoes, type MensagemRecebida } from './canal.ts';
-import { SESSAO, URL_BASE_EXTERNA, type Base } from './bd.ts';
-import { Registo } from './eventos/registo.ts';
-import { criarTratadorMensagens, type EstadoCanalPartilhado } from './canal/tratador-mensagens.ts';
-import { Henriques } from './henriques/henriques.ts';
-import { RedatorOpenRouter } from './henriques/redator-openrouter.ts';
-import { MotorDecisaoTypeSafe } from './typesafe/motor-decisao.ts';
-import { ClientePortaMcp } from './henriques/cliente-porta.ts';
-import { BuscadorConhecimento } from './conhecimento/buscador.ts';
-import { CofreDigital } from './cofre/cofre.ts';
-import { ServicoChavesCofre } from './cofre/servico-chaves.ts';
-import { GestorMandatos } from './mandatos/mandatos.ts';
-import { MotorPolitica } from './politica/politica.ts';
-import { OrquestradorMissoes } from './orquestrador/missao.ts';
-import { GestorFluxoD2 } from './orquestrador/fluxo-conversa-d2.ts';
-import { ProcessadorCenarios } from './simuladores/cenarios.ts';
-import { TratadorComandos } from './comandos/tratador-comandos.ts';
-import type { EntradaCanalWeb, LigacaoWeb } from './eventos/servidor.ts';
+import { criarCanalGrammy, type CanalGrammy, type Botoes, type MensagemRecebida } from './canal.js';
+import { SESSAO, URL_BASE_EXTERNA, type Base } from './bd.js';
+import { Registo } from './eventos/registo.js';
+import { criarTratadorMensagens, type EstadoCanalPartilhado } from './canal/tratador-mensagens.js';
+import { Henriques } from './henriques/henriques.js';
+import { RedatorOpenRouter } from './henriques/redator-openrouter.js';
+import { MotorDecisaoTypeSafe } from './typesafe/motor-decisao.js';
+import { ClientePortaMcp } from './henriques/cliente-porta.js';
+import { BuscadorConhecimento } from './conhecimento/buscador.js';
+import { CofreDigital } from './cofre/cofre.js';
+import { ServicoChavesCofre } from './cofre/servico-chaves.js';
+import { GestorMandatos } from './mandatos/mandatos.js';
+import { MotorPolitica } from './politica/politica.js';
+import { OrquestradorMissoes } from './orquestrador/missao.js';
+import { GestorFluxoD2 } from './orquestrador/fluxo-conversa-d2.js';
+import { ProcessadorCenarios } from './simuladores/cenarios.js';
+import { TratadorComandos } from './comandos/tratador-comandos.js';
+import type { EntradaCanalWeb, LigacaoWeb } from './eventos/servidor.js';
 import { randomBytes } from 'node:crypto';
 
 export const PESSOA_PADRAO = 'pessoa-1bbe89cb4d';

@@ -2,7 +2,7 @@
  * Mensagens do painel web (Vercel): entram no mesmo tratador que o Telegram.
  *   POST /api/canal/mensagem  { codigo, texto? , botao? }
  */
-import { kernel, json, corpoJson, preflight } from '../_kernel.ts';
+import { kernel, json, corpoJson, preflight } from '../_kernel.js';
 
 export const config = { maxDuration: 60 };
 

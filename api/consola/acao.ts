@@ -5,9 +5,9 @@
  * Regista o despacho, move a missão e notifica o cidadão no canal dele
  * (Telegram + painel, pelo mesmo fan-out).
  */
-import { kernel, json, corpoJson, preflight } from '../_kernel.ts';
-import { PESSOA_PADRAO } from '../../prototipo/apps/api/src/nucleo/kernel.ts';
-import { SESSAO } from '../../prototipo/apps/api/src/nucleo/bd.ts';
+import { kernel, json, corpoJson, preflight } from '../_kernel.js';
+import { PESSOA_PADRAO } from '../../prototipo/apps/api/src/nucleo/kernel.js';
+import { SESSAO } from '../../prototipo/apps/api/src/nucleo/bd.js';
 
 export const config = { maxDuration: 60 };
 

@@ -10,13 +10,13 @@
  * - /dados: Auditoria de acessos e tratamento de dados pessoais
  * - /pessoa: Encaminhamento para atendimento humano presencial/telefónico
  */
-import { escapar, type Canal, type MensagemRecebida } from '../canal.ts';
-import type { CofreDigital } from '../cofre/cofre.ts';
-import type { GestorMandatos } from '../mandatos/mandatos.ts';
-import type { OrquestradorMissoes } from '../orquestrador/missao.ts';
-import type { Registo } from '../eventos/registo.ts';
-import type { Henriques } from '../henriques/henriques.ts';
-import type { GestorFluxoD2 } from '../orquestrador/fluxo-conversa-d2.ts';
+import { escapar, type Canal, type MensagemRecebida } from '../canal.js';
+import type { CofreDigital } from '../cofre/cofre.js';
+import type { GestorMandatos } from '../mandatos/mandatos.js';
+import type { OrquestradorMissoes } from '../orquestrador/missao.js';
+import type { Registo } from '../eventos/registo.js';
+import type { Henriques } from '../henriques/henriques.js';
+import type { GestorFluxoD2 } from '../orquestrador/fluxo-conversa-d2.js';
 
 export interface DependenciasComandos {
   canal: Canal;

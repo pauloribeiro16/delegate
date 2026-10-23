@@ -29,11 +29,11 @@ function porta(): Promise<InstanciaPorta> {
       const url = process.env.DATABASE_URL?.trim();
       if (!url) throw new Error('Falta DATABASE_URL — a Porta alojada corre sobre a base externa');
       // Importações preguiçosas: o erro real sai como JSON, não como falha cega.
-      const { criarServidorPorta } = await import('../../prototipo/apps/api/src/porta/servidor.ts');
-      const { CatalogoPorta } = await import('../../prototipo/apps/api/src/porta/servicos.ts');
-      const { Registo } = await import('../../prototipo/apps/api/src/nucleo/eventos/registo.ts');
-      const { servicosUrbanos } = await import('../../prototipo/apps/api/src/su/processos.ts');
-      const { raizPrototipo } = await import('../../prototipo/apps/api/src/nucleo/dados-raiz.ts');
+      const { criarServidorPorta } = await import('../../prototipo/apps/api/src/porta/servidor.js');
+      const { CatalogoPorta } = await import('../../prototipo/apps/api/src/porta/servicos.js');
+      const { Registo } = await import('../../prototipo/apps/api/src/nucleo/eventos/registo.js');
+      const { servicosUrbanos } = await import('../../prototipo/apps/api/src/su/processos.js');
+      const { raizPrototipo } = await import('../../prototipo/apps/api/src/nucleo/dados-raiz.js');
       const pg = (await import('pg')).default;
       const ssl = url.includes('sslmode=') ? {} : { ssl: { rejectUnauthorized: false } };
       const pool = new pg.Pool({ connectionString: url, max: 3, ...ssl });

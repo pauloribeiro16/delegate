@@ -9,17 +9,17 @@
  */
 import { promises as fs } from 'node:fs';
 import { join } from 'node:path';
-import { raizPrototipo } from '../dados-raiz.ts';
-import type { CanalGrammy, Botao, MensagemRecebida } from '../canal.ts';
-import type { Registo } from '../eventos/registo.ts';
-import type { Henriques } from '../henriques/henriques.ts';
-import type { ClientePortaMcp } from '../henriques/cliente-porta.ts';
-import type { CofreDigital } from '../cofre/cofre.ts';
-import type { GestorMandatos } from '../mandatos/mandatos.ts';
-import type { OrquestradorMissoes } from '../orquestrador/missao.ts';
-import type { GestorFluxoD2 } from '../orquestrador/fluxo-conversa-d2.ts';
-import type { ProcessadorCenarios } from '../simuladores/cenarios.ts';
-import type { TratadorComandos } from '../comandos/tratador-comandos.ts';
+import { raizPrototipo } from '../dados-raiz.js';
+import type { CanalGrammy, Botao, MensagemRecebida } from '../canal.js';
+import type { Registo } from '../eventos/registo.js';
+import type { Henriques } from '../henriques/henriques.js';
+import type { ClientePortaMcp } from '../henriques/cliente-porta.js';
+import type { CofreDigital } from '../cofre/cofre.js';
+import type { GestorMandatos } from '../mandatos/mandatos.js';
+import type { OrquestradorMissoes } from '../orquestrador/missao.js';
+import type { GestorFluxoD2 } from '../orquestrador/fluxo-conversa-d2.js';
+import type { ProcessadorCenarios } from '../simuladores/cenarios.js';
+import type { TratadorComandos } from '../comandos/tratador-comandos.js';
 
 /** Estado que o tratador partilha com o resto do núcleo (consola, escuta SU). */
 export interface EstadoCanalPartilhado {

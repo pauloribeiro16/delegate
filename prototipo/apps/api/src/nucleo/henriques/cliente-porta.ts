@@ -5,8 +5,8 @@
  * nem acede aos sistemas em memória. Fala com a Porta por HTTP usando o SDK v2.
  */
 import { Client, StreamableHTTPClientTransport } from '@modelcontextprotocol/client';
-import type { Servico } from '../../../../../registo/esquema.ts';
-import type { ResumoServico } from '../../porta/servicos.ts';
+import type { Servico } from '../../../../../registo/esquema.js';
+import type { ResumoServico } from '../../porta/servicos.js';
 
 export class ClientePortaMcp {
   readonly #url: string;

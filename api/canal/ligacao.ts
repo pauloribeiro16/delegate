@@ -3,7 +3,7 @@
  *   GET  /api/canal/ligacao?codigo=…  — estado da ligação de uma sessão
  *   POST /api/canal/ligacao           — cria um código de ligação
  */
-import { kernel, json, preflight } from '../_kernel.ts';
+import { kernel, json, preflight } from '../_kernel.js';
 
 export const config = { maxDuration: 30 };
 

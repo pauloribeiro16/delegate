@@ -16,7 +16,7 @@
  *   - missao.checklist.gerada
  *   - missao.estado.alterado
  */
-import type { Registo } from '../eventos/registo.ts';
+import type { Registo } from '../eventos/registo.js';
 
 export type EstadoMissao =
   | 'entendido'

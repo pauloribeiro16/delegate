@@ -4,10 +4,10 @@
  * Utiliza o Jev da TypeSafe, via OpenRouter (`typesafe/jev-router`), para transformar
  * linguagem natural e o contexto da sessão em julgamentos tipados.
  */
-import { choice, criarClienteJev, noul, type ChoiceResponse, type ClienteJev, type NoulResponse } from './jev-openrouter.ts';
-import type { ContextoDecisao, FocoServico, ResultadoDecisao, TipoComportamento } from './tipos.ts';
-import type { NivelMandato } from '../mandatos/mandatos.ts';
-import { BASE_INTENCOES_MUNICIPAIS } from './catalogo-intencoes.ts';
+import { choice, criarClienteJev, noul, type ChoiceResponse, type ClienteJev, type NoulResponse } from './jev-openrouter.js';
+import type { ContextoDecisao, FocoServico, ResultadoDecisao, TipoComportamento } from './tipos.js';
+import type { NivelMandato } from '../mandatos/mandatos.js';
+import { BASE_INTENCOES_MUNICIPAIS } from './catalogo-intencoes.js';
 import {
   FRONTEIRAS_E_SALVAGUARDAS,
   CRITERIOS_FOCO_SERVICO,
@@ -15,14 +15,14 @@ import {
   CRITERIOS_COMPORTAMENTO,
   CRITERIOS_MANDATO,
   CRITERIOS_FERRAMENTA_MCP,
-} from './criterios.ts';
-import { AvaliadorLocal } from './avaliador-local.ts';
+} from './criterios.js';
+import { AvaliadorLocal } from './avaliador-local.js';
 
 // Re-exportações de compatibilidade para consumidores do módulo
-export * from './tipos.ts';
-export * from './catalogo-intencoes.ts';
-export * from './criterios.ts';
-export * from './avaliador-local.ts';
+export * from './tipos.js';
+export * from './catalogo-intencoes.js';
+export * from './criterios.js';
+export * from './avaliador-local.js';
 
 export class MotorDecisaoTypeSafe {
   readonly #jev: ClienteJev | null;

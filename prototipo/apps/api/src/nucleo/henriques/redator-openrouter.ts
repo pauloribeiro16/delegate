@@ -5,7 +5,7 @@
  * para redigir respostas em linguagem natural simples e rigorosa (pt-PT),
  * estritamente fundamentadas em fontes oficiais e validadas pelo Verificador por Regra.
  */
-import { VerificadorRegra } from './verificador.ts';
+import { VerificadorRegra } from './verificador.js';
 
 export interface ParametrosRedacao {
   pergunta: string;

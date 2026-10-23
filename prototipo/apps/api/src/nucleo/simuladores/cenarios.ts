@@ -7,15 +7,15 @@
  * - Instrução de Caderneta Predial (PDF) com cifra AES-256-GCM no Cofre Digital;
  * - Validação técnica de corredor pedonal livre em esplanadas (>= 2,00m).
  */
-import type { Registo } from '../eventos/registo.ts';
-import type { GestorMandatos } from '../mandatos/mandatos.ts';
-import type { CofreDigital } from '../cofre/cofre.ts';
-import type { MotorPolitica } from '../politica/politica.ts';
-import type { ServicoChavesCofre } from '../cofre/servico-chaves.ts';
-import type { ClientePortaMcp } from '../henriques/cliente-porta.ts';
-import type { OrquestradorMissoes } from '../orquestrador/missao.ts';
-import type { CanalGrammy as CanalTelegram, MensagemRecebida as MensagemCanal } from '../canal.ts';
-import type { DadosConfirmacaoCmd } from '../eventos/servidor.ts';
+import type { Registo } from '../eventos/registo.js';
+import type { GestorMandatos } from '../mandatos/mandatos.js';
+import type { CofreDigital } from '../cofre/cofre.js';
+import type { MotorPolitica } from '../politica/politica.js';
+import type { ServicoChavesCofre } from '../cofre/servico-chaves.js';
+import type { ClientePortaMcp } from '../henriques/cliente-porta.js';
+import type { OrquestradorMissoes } from '../orquestrador/missao.js';
+import type { CanalGrammy as CanalTelegram, MensagemRecebida as MensagemCanal } from '../canal.js';
+import type { DadosConfirmacaoCmd } from '../eventos/servidor.js';
 
 export type { DadosConfirmacaoCmd };
 

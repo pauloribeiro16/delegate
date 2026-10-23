@@ -8,7 +8,7 @@
  *   GET /api/telegram — instala o webhook deste domínio no bot.
  *   POST /api/telegram — entrada das atualizações (chamado pelo Telegram).
  */
-import { kernel, json } from './_kernel.ts';
+import { kernel, json } from './_kernel.js';
 
 export const config = { maxDuration: 30 };
 

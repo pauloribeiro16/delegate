@@ -4,7 +4,7 @@
  * Fornece ao Jev e ao motor de decisão o catálogo estruturado com os 16 procedimentos
  * autárquicos oficiais, incluindo diplomas, artigos legais, âmbito e requisitos probatórios.
  */
-import type { IntencaoMunicipal } from './tipos.ts';
+import type { IntencaoMunicipal } from './tipos.js';
 
 export const BASE_INTENCOES_MUNICIPAIS: IntencaoMunicipal[] = [
   {

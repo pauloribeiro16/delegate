@@ -10,9 +10,9 @@
 import { createServer, type IncomingMessage, type ServerResponse, type Server } from 'node:http';
 import { McpServer, createMcpHandler } from '@modelcontextprotocol/server';
 import { z } from 'zod';
-import { CatalogoPorta } from './servicos.ts';
-import type { Registo } from '../nucleo/eventos/registo.ts';
-import { servicosUrbanos, type EstadoProcesso } from '../su/processos.ts';
+import { CatalogoPorta } from './servicos.js';
+import type { Registo } from '../nucleo/eventos/registo.js';
+import { servicosUrbanos, type EstadoProcesso } from '../su/processos.js';
 
 export interface OpcoesPorta {
   portaHttp?: number;

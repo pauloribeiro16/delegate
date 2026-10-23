@@ -11,8 +11,8 @@
 import { createServer, type ServerResponse } from 'node:http';
 import { readFile } from 'node:fs/promises';
 import pg from 'pg';
-import type { Registo } from './registo.ts';
-import { cifrarDados, derivarChavePessoa } from '../cofre/cifra.ts';
+import type { Registo } from './registo.js';
+import { cifrarDados, derivarChavePessoa } from '../cofre/cifra.js';
 
 const CABECALHOS = {
   'Content-Type': 'text/event-stream',

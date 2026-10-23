@@ -4,7 +4,7 @@
  *   GET /api/eventos?desde=N&pessoa=pseudónimo
  * Devolve os eventos a partir de `desde`, no mesmo formato do SSE.
  */
-import { kernel, json, preflight } from './_kernel.ts';
+import { kernel, json, preflight } from './_kernel.js';
 
 export const config = { maxDuration: 30 };
 

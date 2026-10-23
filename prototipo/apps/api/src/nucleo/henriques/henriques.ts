@@ -8,20 +8,20 @@
  * 4. Encaminha com clareza assuntos de entidades externas;
  * 5. Preserva o contexto em conversas multi-turno e respeita o quadro de mandatos D0-D4.
  */
-import type { Registo } from '../eventos/registo.ts';
-import { ClientePortaMcp } from './cliente-porta.ts';
-import { MotorDecisaoTypeSafe, type ContextoDecisao } from '../typesafe/motor-decisao.ts';
-import { RedatorOpenRouter } from './redator-openrouter.ts';
+import type { Registo } from '../eventos/registo.js';
+import { ClientePortaMcp } from './cliente-porta.js';
+import { MotorDecisaoTypeSafe, type ContextoDecisao } from '../typesafe/motor-decisao.js';
+import { RedatorOpenRouter } from './redator-openrouter.js';
 import {
   tratarAdversarial,
   tratarJuizoTecnico,
   tratarForaCompetencia,
   tratarSemFonte,
-} from './respostas-fronteira.ts';
-import { tratarAmbiguidade } from './router-ambiguidade.ts';
-import { gerarRespostaCatalogo } from './respostas-catalogo.ts';
-import { BuscadorConhecimento } from '../conhecimento/buscador.ts';
-import { fracionarResposta, type Botoes } from '../canal.ts';
+} from './respostas-fronteira.js';
+import { tratarAmbiguidade } from './router-ambiguidade.js';
+import { gerarRespostaCatalogo } from './respostas-catalogo.js';
+import { BuscadorConhecimento } from '../conhecimento/buscador.js';
+import { fracionarResposta, type Botoes } from '../canal.js';
 
 export interface MemoriaConversa {
   ultimoServicoId?: string;
@@ -48,7 +48,7 @@ export interface RespostaHenriques {
   geradoPorLlm?: boolean;
 }
 
-import { GestorContextoConversa } from './gestor-contexto.ts';
+import { GestorContextoConversa } from './gestor-contexto.js';
 
 export class Henriques {
   readonly #registo: Registo;

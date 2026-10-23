@@ -7,16 +7,16 @@
  *  - conteúdo do Cofre nunca em claro;
  *  - `simulacao` verdadeiro sempre que venha de um sistema ou ato simulado.
  */
-export { Envelope, Pedido, Origem, TipoEvento, Ator, Pessoa, ORIGENS } from './envelope.ts';
-export type { EventoGuardado, Evento, EventoSemIdOuSelo } from './envelope.ts';
-export { calcularHash, selar, verificarCadeia } from './selo.ts';
-export type { Verificacao } from './selo.ts';
-export { CATALOGO, TIPOS, TIPOS_DA_DEMO, NOS_DO_GRAFO, procurarEvento } from './catalogo.ts';
-export type { Entrada, Prioridade } from './catalogo.ts';
+export { Envelope, Pedido, Origem, TipoEvento, Ator, Pessoa, ORIGENS } from './envelope.js';
+export type { EventoGuardado, Evento, EventoSemIdOuSelo } from './envelope.js';
+export { calcularHash, selar, verificarCadeia } from './selo.js';
+export type { Verificacao } from './selo.js';
+export { CATALOGO, TIPOS, TIPOS_DA_DEMO, NOS_DO_GRAFO, procurarEvento } from './catalogo.js';
+export type { Entrada, Prioridade } from './catalogo.js';
 
 // Reexportar não traz o nome para o âmbito local: para o filtrar é preciso
 // importá-lo à parte.
-import { TIPOS } from './catalogo.ts';
+import { TIPOS } from './catalogo.js';
 import legendas from './legendas.json' with { type: 'json' };
 
 const LEGENDAS = legendas as Record<string, string>;
