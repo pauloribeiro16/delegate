@@ -4,12 +4,12 @@
  * Dois modos:
  *  - Local (omissão): PostgreSQL embutido, com esquemas separados. Os esquemas
  *    simulam bases isoladas — é isso que impede que uma rota simulada sirva de
- *    atalho para outra.
+ *    atalho para outra. O embutido importa-se àcara de necessidade: no Vercel
+ *    o pacote nem existe, e a função alojada nunca entra neste ramo.
  *  - Alojado (quando existe DATABASE_URL): um PostgreSQL externo (ex.: Neon no
  *    Vercel), ligação por SSL. É o modo das funções serverless — o mesmo
  *    esquema, sem embutido.
  */
-import EmbeddedPostgres from 'embedded-postgres';
 import pg from 'pg';
 import { rm } from 'node:fs/promises';
 import { resolve } from 'node:path';
@@ -121,6 +121,9 @@ async function abrirBaseExterna(url: string): Promise<Base> {
  */
 export async function abrirBase(opcoes: OpcoesBase = {}): Promise<Base> {
   if (URL_BASE_EXTERNA) return abrirBaseExterna(URL_BASE_EXTERNA);
+
+  // Importe-se aqui: no alojamento este ramo nunca corre e o pacote nem existe.
+  const { default: EmbeddedPostgres } = await import('embedded-postgres');
 
   const pasta = opcoes.pasta ?? resolve(import.meta.dirname, '../../../../.pgdata');
   const porta = opcoes.porta ?? PORTAS.nucleo;
