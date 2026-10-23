@@ -10,13 +10,15 @@
  * O estado dos processos do SU persiste na base alojada (su_simulado.processos).
  */
 import type { IncomingMessage, ServerResponse } from 'node:http';
+import type { Pool } from 'pg';
 import { join } from 'node:path';
 
 export const config = { maxDuration: 60 };
 
 interface InstanciaPorta {
   processarPedido: (req: IncomingMessage, res: ServerResponse) => Promise<void>;
-  pool: pg.Pool;
+  persistirSU: () => Promise<void>;
+  pool: Pool;
 }
 
 const globalPorta = globalThis as unknown as { __portaInstancia?: Promise<InstanciaPorta> };
@@ -44,7 +46,11 @@ function porta(): Promise<InstanciaPorta> {
       });
       await servicosUrbanos.carregar(pool);
       console.log(`✓ Porta Agêntica alojada pronta (${instancia.catalogo.total} serviços no catálogo)`);
-      return { processarPedido: instancia.processarPedido, pool };
+      return {
+        processarPedido: instancia.processarPedido,
+        persistirSU: () => servicosUrbanos.persistir(pool),
+        pool,
+      };
     })();
   }
   return globalPorta.__portaInstancia;
@@ -52,7 +58,7 @@ function porta(): Promise<InstanciaPorta> {
 
 export default async function (req: IncomingMessage, res: ServerResponse): Promise<void> {
   try {
-    const { processarPedido, pool } = await porta();
+    const { processarPedido, persistirSU } = await porta();
     // O despacho da porta reconhece /mcp e /ferramentas: traduzir os percursos
     // da função (/api/porta/…) para os da porta.
     const caminho = new URL(req.url ?? '/', 'http://interno').pathname;
@@ -64,7 +70,7 @@ export default async function (req: IncomingMessage, res: ServerResponse): Promi
     }
     await processarPedido(req, res);
     // Os processos do SU mudam dentro do despacho: gravar de volta na base.
-    await servicosUrbanos.persistir(pool).catch((err: unknown) => {
+    await persistirSU().catch((err: unknown) => {
       console.warn('⚠ persistência do SU:', (err as Error).message);
     });
   } catch (err: any) {

@@ -146,7 +146,7 @@ export class MotorDecisaoTypeSafe {
           mudancaServico = false;
         }
 
-        const percursoJev = [
+        const percursoJev: Array<{ nivel: number; noId: string; nome: string; estado: 'ativo' | 'concluido'; detalhe: string }> = [
           { nivel: 0, noId: 'no-raiz', nome: 'Mensagem Recebida', estado: 'concluido' as const, detalhe: `Contexto avaliado pelo Jev Router (${resposta.modelo})` },
           { nivel: 0, noId: 'no-triagem', nome: 'Triagem Rápida', estado: 'concluido' as const, detalhe: 'Avaliação de integridade concluída' },
         ];

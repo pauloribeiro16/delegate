@@ -136,7 +136,7 @@ export class RedatorOpenRouter {
           continue;
         }
 
-        const dados = await res.json();
+        const dados = (await res.json()) as { choices?: Array<{ message?: { content?: string } }>; model?: string };
         const textoGerado = dados.choices?.[0]?.message?.content?.trim();
 
         if (textoGerado && textoGerado.length > 20) {

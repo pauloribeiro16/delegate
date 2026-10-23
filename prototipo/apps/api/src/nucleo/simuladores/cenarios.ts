@@ -14,7 +14,7 @@ import type { MotorPolitica } from '../politica/politica.ts';
 import type { ServicoChavesCofre } from '../cofre/servico-chaves.ts';
 import type { ClientePortaMcp } from '../henriques/cliente-porta.ts';
 import type { OrquestradorMissoes } from '../orquestrador/missao.ts';
-import type { CanalTelegram, MensagemCanal } from '../canal.ts';
+import type { CanalGrammy as CanalTelegram, MensagemRecebida as MensagemCanal } from '../canal.ts';
 import type { DadosConfirmacaoCmd } from '../eventos/servidor.ts';
 
 export type { DadosConfirmacaoCmd };

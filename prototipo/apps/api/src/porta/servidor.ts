@@ -878,10 +878,10 @@ export async function criarServidorPorta(opcoes: OpcoesPorta = {}): Promise<{
 
         const pedidoWeb = new Request(url.toString(), {
           method: req.method,
-          headers: req.headers as HeadersInit,
+          headers: req.headers as Record<string, string>,
           body: corpo,
           duplex: 'half',
-        } as RequestInit & { duplex: 'half' });
+        } as never);
 
         const respostaWeb = await mcpHandler.fetch(pedidoWeb);
         const headersRes: Record<string, string> = {};

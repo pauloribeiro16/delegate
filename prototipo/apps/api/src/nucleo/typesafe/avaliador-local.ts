@@ -473,7 +473,7 @@ export class AvaliadorLocal {
     }
 
     const catFinal = AvaliadorLocal.mapearCategoria(servicoId ?? 'catalogo');
-    const percursoFinal = [
+    const percursoFinal: Array<{ nivel: number; noId: string; nome: string; estado: 'ativo' | 'concluido'; detalhe: string }> = [
       { nivel: 0, noId: 'no-raiz', nome: 'Mensagem Recebida', estado: 'concluido' as const, detalhe: 'Texto enquadrado na autarquia' },
       { nivel: 0, noId: 'no-triagem', nome: 'Triagem Rápida', estado: 'concluido' as const, detalhe: 'Aprovado para análise de competência autárquica' },
       { nivel: 1, noId: catFinal === 'conhecimento_d0' ? 'no-rag-encaminha' : 'no-canonico', nome: catFinal === 'conhecimento_d0' ? 'Roteamento RAG D0' : 'Procedimento Canónico', estado: 'concluido' as const, detalhe: servicoId ?? 'Geral' },
