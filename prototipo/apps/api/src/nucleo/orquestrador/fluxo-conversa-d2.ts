@@ -439,6 +439,8 @@ export class GestorFluxoD2 {
     }
 
     // 4. Extração Flexível de Corredor Pedonal e Documentos Instrutórios
+    // Códigos de botão (d2_*) nunca medem largura: o «2» de «d2_morada_joaquim»
+    // não é um corredor medido.
     const matchLargura = t.match(/(\d+[\.,]\d+|\d+)\s*(m|metro|metros)?/i);
     const ehEnvioDoc =
       t.startsWith('d2_anexar_') ||
@@ -447,7 +449,7 @@ export class GestorFluxoD2 {
       t === 'd2_passeio_ok' ||
       /planta|croquis|certid[aã]o|documento|ficheiro|anexo|termo|responsabilidade|seguro|2[,.]10|2[,.]50|calçada|passeio/i.test(t);
 
-    if (matchLargura && /metro|m\b|largura|livre|calçada|passeio/i.test(t)) {
+    if (matchLargura && !t.startsWith('d2_') && /metro|m\b|largura|livre|calçada|passeio/i.test(t)) {
       const val = parseFloat(matchLargura[1].replace(',', '.'));
       if (val >= 2.00) {
         rascunho.larguraLivre = `${val.toFixed(2).replace('.', ',')} metros`;

@@ -79,6 +79,25 @@ export interface AcaoConsolaServidor {
   nota?: string;
 }
 
+/** Uma mensagem ou botão que entra pelo painel Web. O código identifica a sessão ligada. */
+export interface EntradaCanalWeb {
+  codigo: string;
+  texto?: string;
+  botao?: string;
+}
+
+/** A associação entre um código de ligação e a pessoa que fez /start com ele. */
+export interface LigacaoWeb {
+  pessoa: string;
+  conversa: string;
+  quando: string;
+}
+
+const RESPOSTA_JSON = {
+  'Content-Type': 'application/json; charset=utf-8',
+  'Access-Control-Allow-Origin': '*',
+};
+
 export function criarServidorEventos(
   registro: Registo,
   abrirEscuta: () => Promise<pg.Client>,
@@ -89,6 +108,9 @@ export function criarServidorEventos(
   acoesCofre?: AcoesCofreServidor,
   aoAcaoConsola?: (dados: AcaoConsolaServidor) => Promise<void>,
   obterPedidosConsola?: () => Promise<any> | any,
+  aoReceberCanalWeb?: (entrada: EntradaCanalWeb) => Promise<void>,
+  criarLigacaoWeb?: () => string,
+  obterLigacaoWeb?: (codigo: string) => LigacaoWeb | null,
 ) {
   return createServer((req, res) => {
     void (async () => {
@@ -307,11 +329,60 @@ export function criarServidorEventos(
           if (obterPedidosConsola) {
             lista = await obterPedidosConsola();
           }
-          res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8', 'Access-Control-Allow-Origin': '*' });
+          res.writeHead(200, RESPOSTA_JSON);
           res.end(JSON.stringify(lista));
           return;
         } catch (err) {
-          res.writeHead(500, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+          res.writeHead(500, RESPOSTA_JSON);
+          res.end(JSON.stringify({ erro: (err as Error).message }));
+          return;
+        }
+      }
+
+      // 1.3 Criar código de ligação de uma sessão Web (POST /api/canal/ligacao)
+      if (caminho === '/api/canal/ligacao' && req.method === 'POST') {
+        try {
+          if (!criarLigacaoWeb) throw new Error('Ligações Web não ativas neste núcleo');
+          res.writeHead(200, RESPOSTA_JSON);
+          res.end(JSON.stringify({ ok: true, codigo: criarLigacaoWeb() }));
+          return;
+        } catch (err) {
+          res.writeHead(500, RESPOSTA_JSON);
+          res.end(JSON.stringify({ erro: (err as Error).message }));
+          return;
+        }
+      }
+
+      // 1.4 Estado da ligação: o painel pergunta se o /start já chegou (GET /api/canal/ligacao?codigo=…)
+      if (caminho === '/api/canal/ligacao' && req.method === 'GET') {
+        const pergunta = new URL(req.url ?? '', 'http://localhost').searchParams;
+        const codigo = (pergunta.get('codigo') ?? '').toLowerCase();
+        const ligacao = codigo && obterLigacaoWeb ? obterLigacaoWeb(codigo) : null;
+        res.writeHead(200, RESPOSTA_JSON);
+        res.end(JSON.stringify({ ok: true, ligada: Boolean(ligacao), pessoa: ligacao?.pessoa ?? null }));
+        return;
+      }
+
+      // 1.5 Entrada do canal Web: a mensagem segue o mesmo tratador do Telegram.
+      // O código de ligação é quem identifica a pessoa — nunca um pseudónimo vindo do cliente.
+      if (caminho === '/api/canal/mensagem' && req.method === 'POST') {
+        let corpo = '';
+        for await (const pedaco of req) corpo += pedaco;
+        try {
+          const body = JSON.parse(corpo);
+          const codigo = typeof body.codigo === 'string' ? body.codigo.trim().toLowerCase() : '';
+          const texto = typeof body.texto === 'string' ? body.texto.trim() : '';
+          const botao = typeof body.botao === 'string' ? body.botao.trim() : '';
+          if (!codigo) throw new Error('Falta o código da sessão (ligue primeiro o Telegram)');
+          if (!texto && !botao) throw new Error('Mensagem vazia: indique «texto» ou «botao»');
+          if (texto && botao) throw new Error('Indique só uma coisa: «texto» ou «botao»');
+          if (!aoReceberCanalWeb) throw new Error('Canal Web não ativo neste núcleo');
+          await aoReceberCanalWeb({ codigo, texto: texto || undefined, botao: botao || undefined });
+          res.writeHead(200, RESPOSTA_JSON);
+          res.end(JSON.stringify({ ok: true, aceite: true }));
+          return;
+        } catch (err) {
+          res.writeHead(400, RESPOSTA_JSON);
           res.end(JSON.stringify({ erro: (err as Error).message }));
           return;
         }
@@ -396,12 +467,14 @@ export function criarServidorEventos(
       res.writeHead(200, CABECALHOS);
       res.write('retry: 1000\n\n');
 
-      // O browser diz de onde quer recomeçar, se a ligação caiu a meio, e em
-      // que sessão quer o fluxo.
+      // O browser diz de onde quer recomeçar, em que sessão quer o fluxo e —
+      // nas sessões pessoais do painel — de que pessoa. Sem o filtro, uma
+      // sessão veria conversas que não são suas.
       const pergunta = new URL(req.url, 'http://localhost').searchParams;
       const cru = Number(pergunta.get('desde') ?? '0');
       const desde = Number.isSafeInteger(cru) && cru >= 0 ? cru : 0;
       const sessao = pergunta.get('sessao') ?? undefined;
+      const pessoaFiltro = pergunta.get('pessoa') ?? undefined;
 
       // Primeiro o que se perdeu, depois o que chega.
       let cursor = desde;
@@ -409,7 +482,9 @@ export function criarServidorEventos(
         const lote = await registro.desde(cursor, 500, sessao);
         if (lote.length === 0) break;
         for (const evento of lote) {
-          res.write(`id: ${evento.seq}\ndata: ${JSON.stringify(evento)}\n\n`);
+          if (!pessoaFiltro || evento.pessoa === pessoaFiltro) {
+            res.write(`id: ${evento.seq}\ndata: ${JSON.stringify(evento)}\n\n`);
+          }
           cursor = evento.seq;
         }
         if (lote.length < 500) break;
@@ -438,6 +513,7 @@ export function criarServidorEventos(
           .then((evento) => {
             if (!evento) return;
             if (sessao && evento.sessao !== sessao) return;
+            if (pessoaFiltro && evento.pessoa !== pessoaFiltro) return;
             res.write(`id: ${evento.seq}\ndata: ${JSON.stringify(evento)}\n\n`);
           })
           .catch((err: unknown) => console.error('✖ ao entregar o evento:', err));
