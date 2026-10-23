@@ -294,8 +294,8 @@ export async function criarKernel(deps: DependenciasKernel): Promise<Kernel> {
     estado: estadoCanal,
     aoAssociarConversa: deps.aoAssociarConversa,
     aoLigarPessoa: (codigo, m) => {
-      ligacoesWeb.set(codigo, { pessoa: m.pessoa, conversa: m.conversa, quando: new Date().toISOString() });
       console.log(`🔗 [Canal Web] Sessão ligada a ${m.pessoa} (código ${codigo.slice(0, 8)}…)`);
+      return guardarLigacao(codigo, { pessoa: m.pessoa, conversa: m.conversa, quando: new Date().toISOString() });
     },
   });
 

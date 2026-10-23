@@ -49,8 +49,10 @@ export interface DependenciasTratadorCanal {
   /**
    * Ligação de uma sessão Web ao Telegram: o painel gera um código, a pessoa
    * faz /start com esse código no bot, e aqui fica associada a quem chegou.
+   * Tem de ser esperado: no alojamento a função congela ao responder e uma
+   * escrita destacada perde-se.
    */
-  aoLigarPessoa?: (codigo: string, m: MensagemRecebida) => void;
+  aoLigarPessoa?: (codigo: string, m: MensagemRecebida) => void | Promise<void>;
 }
 
 const RAIZ_DADOS = join(raizPrototipo(), 'data', 'cenarios_simulados');
@@ -127,7 +129,7 @@ export function criarTratadorMensagens(deps: DependenciasTratadorCanal) {
           // Deep-link do painel: /start <codigo> liga a sessão Web a esta pessoa.
           const payload = m.texto.trim().split(/\s+/)[1];
           if (payload && /^[a-f0-9]{16,64}$/i.test(payload) && aoLigarPessoa) {
-            aoLigarPessoa(payload.toLowerCase(), m);
+            await aoLigarPessoa(payload.toLowerCase(), m);
           }
         }
         const tratado = await comandos.tratar(m);
