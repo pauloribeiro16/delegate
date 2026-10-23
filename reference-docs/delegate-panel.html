@@ -2003,6 +2003,9 @@ async function iniciarSessao() {
     return;
   }
   $('wa-sub').textContent = 'Ligue o Telegram para começar';
+  // Sem sessão não há fluxo de eventos: o indicador diz o que realmente se espera.
+  const estadoTexto = $('estado-texto');
+  if (estadoTexto) estadoTexto.textContent = 'À espera da ligação por QR';
 
   // Sessão guardada neste separador: confirmar que continua válida no núcleo.
   const codigoGuardado = sessionStorage.getItem(CHAVE_SESSAO);
