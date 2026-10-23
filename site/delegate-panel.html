@@ -2047,14 +2047,24 @@ async function iniciarSessao() {
       const r = await fetch(`${NUCLEO}/api/canal/ligacao?codigo=${encodeURIComponent(codigoGuardado)}`);
       const d = await r.json();
       if (d.ligada && d.pessoa) { sincronizar(codigoGuardado, d.pessoa); return; }
-    } catch {}
-    sessionStorage.removeItem(CHAVE_SESSAO);
+      // Ainda não ligada (o /start pode não ter chegado): retomar a MESMA
+      // sessão e mostrar o mesmo QR — recarregar não pode invalidar o que
+      // o utilizador já escaneou.
+      mostrarCartaoLigacao(codigoGuardado);
+      sondarLigacao(codigoGuardado);
+      return;
+    } catch {
+      sessionStorage.removeItem(CHAVE_SESSAO);
+    }
   }
 
   try {
     const r = await fetch(`${NUCLEO}/api/canal/ligacao`, { method: 'POST' });
     if (!r.ok) throw new Error(`o núcleo respondeu ${r.status}`);
     const d = await r.json();
+    // O código guarda-se logo: recarregar a página tem de mostrar o MESMO QR,
+    // senão um /start já feito deixa de bater certo.
+    sessionStorage.setItem(CHAVE_SESSAO, d.codigo);
     mostrarCartaoLigacao(d.codigo);
     sondarLigacao(d.codigo);
   } catch (err) {
