@@ -214,34 +214,34 @@
     </nav>
 
     <div class="acoes-direita">
-      <a id="link-abrir-nova-aba" class="link-acao" href="reference-docs/delegate-panel.html" target="_blank" rel="noopener">
+      <a id="link-abrir-nova-aba" class="link-acao" href="/painel" target="_blank" rel="noopener">
         Abrir em Ecrã Cheio ↗
       </a>
-      <a class="link-acao" href="design-system/index.html" target="_blank" rel="noopener">
+      <a class="link-acao" href="/design-system" target="_blank" rel="noopener">
         Design System
       </a>
     </div>
   </header>
 
   <main id="palco">
-    <iframe id="iframe-painel" class="quadro-consola ativo" src="reference-docs/delegate-panel.html" title="Painel ao Vivo"></iframe>
-    <iframe id="iframe-consola" class="quadro-consola" src="reference-docs/delegate-consola-camara-v2.html" title="Consola Municipal da Câmara"></iframe>
+    <iframe id="iframe-painel" class="quadro-consola ativo" src="/painel" title="Painel ao Vivo"></iframe>
+    <iframe id="iframe-consola" class="quadro-consola" src="/consola" title="Consola Municipal da Câmara"></iframe>
 
     <div id="vista-dupla">
       <section class="coluna-dupla">
         <header class="cabecalho-coluna">
           <span>📱 Cidadão & Orquestração (Henriques · TypeSafe Jev · Cofre)</span>
-          <a href="reference-docs/delegate-panel.html" target="_blank" rel="noopener">Ecrã inteiro ↗</a>
+          <a href="/painel" target="_blank" rel="noopener">Ecrã inteiro ↗</a>
         </header>
-        <iframe src="reference-docs/delegate-panel.html" title="Painel ao Vivo Lado Esquerdo"></iframe>
+        <iframe src="/painel" title="Painel ao Vivo Lado Esquerdo"></iframe>
       </section>
 
       <section class="coluna-dupla">
         <header class="cabecalho-coluna">
           <span>🏛️ Consola Municipal (Serviços Urbanos · Decisão da Câmara)</span>
-          <a href="reference-docs/delegate-consola-camara-v2.html" target="_blank" rel="noopener">Ecrã inteiro ↗</a>
+          <a href="/consola" target="_blank" rel="noopener">Ecrã inteiro ↗</a>
         </header>
-        <iframe src="reference-docs/delegate-consola-camara-v2.html" title="Consola Municipal Lado Direito"></iframe>
+        <iframe src="/consola" title="Consola Municipal Lado Direito"></iframe>
       </section>
     </div>
   </main>
@@ -261,17 +261,17 @@
       if (vista === 'consola') {
         document.getElementById('btn-consola').classList.add('ativo');
         document.getElementById('iframe-consola').classList.add('ativo');
-        btnLink.href = 'reference-docs/delegate-consola-camara-v2.html';
+        btnLink.href = '/consola';
         window.location.hash = 'consola';
       } else if (vista === 'duplo') {
         document.getElementById('btn-duplo').classList.add('ativo');
         document.getElementById('vista-dupla').classList.add('ativo');
-        btnLink.href = 'reference-docs/delegate-panel.html';
+        btnLink.href = '/painel';
         window.location.hash = 'duplo';
       } else {
         document.getElementById('btn-painel').classList.add('ativo');
         document.getElementById('iframe-painel').classList.add('ativo');
-        btnLink.href = 'reference-docs/delegate-panel.html';
+        btnLink.href = '/painel';
         window.location.hash = 'painel';
       }
     }
