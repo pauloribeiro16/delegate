@@ -108,7 +108,33 @@
     border-bottom: 1px solid var(--linha-escura);
     background: var(--dlg-bastidores);
   }
+  body.em-iframe .topo {
+    padding: 6px 20px;
+    background: transparent;
+    border-bottom: 1px solid var(--linha-escura);
+    justify-content: flex-end;
+  }
+  body.em-iframe .topo .marca-topo {
+    display: none !important;
+  }
   .topo .logo { height: 24px; display: block; }
+  .btn-telegram-qr {
+    background: rgba(255, 255, 255, 0.16);
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: var(--dlg-raio-pilula);
+    padding: 4px 10px;
+    font: 700 12px var(--dlg-fonte);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s ease;
+  }
+  .btn-telegram-qr:hover {
+    background: #fff;
+    color: var(--wa-verde);
+  }
   .estado-ligacao {
     display: flex; align-items: center; gap: 10px;
     padding: 4px 13px 4px 10px;
@@ -277,23 +303,89 @@
   }
   .respostas .tecla svg { width: 15px; height: 15px; flex: none; }
   .respostas .tecla.carregada { background: #e7f8f2; color: var(--wa-verde); }
+  .respostas .tecla.clicavel { cursor: pointer; border: none; font-family: inherit; }
+  .respostas .tecla.clicavel:hover { background: #d4f4e7; color: #00705a; }
   .a-escrever { align-self: flex-start; background: var(--wa-entrada); border-radius: 8px; padding: 12px 14px; display: none; gap: 4px; margin-top: 8px; box-shadow: 0 1px 0.5px rgba(11,20,26,.13); }
   .a-escrever.visivel { display: flex; }
   .a-escrever i { width: 7px; height: 7px; border-radius: 50%; background: #8696a0; animation: pulsar 1.1s infinite; }
   .a-escrever i:nth-child(2) { animation-delay: 0.15s; }
   .a-escrever i:nth-child(3) { animation-delay: 0.3s; }
 
-  .wa-escrever { display: flex; align-items: center; gap: 8px; padding: 8px 10px 10px; background: transparent; }
-  .wa-campo {
-    flex: 1; display: flex; align-items: center; gap: 12px;
-    background: #fff; border-radius: 26px; padding: 11px 16px;
-    color: #8696a0; font-size: 15px;
+  .wa-sugestoes {
+    display: flex; gap: 6px; padding: 4px 12px 6px;
+    overflow-x: auto; background: transparent; scrollbar-width: none;
+  }
+  .wa-sugestoes::-webkit-scrollbar { display: none; }
+  .chip-sugestao {
+    background: #fff; border: 1px solid #d1d7db; border-radius: 99px;
+    color: var(--wa-texto); font: 600 12px var(--dlg-fonte);
+    padding: 4px 11px; cursor: pointer; white-space: nowrap;
+    box-shadow: 0 1px 0.5px rgba(11,20,26,.08); transition: all 0.15s ease; flex: none;
+  }
+  .chip-sugestao:hover { background: var(--wa-verde); color: #fff; border-color: var(--wa-verde); }
+  .wa-escrever-form {
+    display: flex; align-items: center; gap: 8px; padding: 4px 10px 10px;
+    background: transparent; width: 100%; box-sizing: border-box;
+  }
+  .wa-campo-interativo {
+    flex: 1; display: flex; align-items: center;
+    background: #fff; border-radius: 26px; padding: 6px 14px;
     box-shadow: 0 1px 0.5px rgba(11, 20, 26, 0.13);
   }
-  .wa-campo span { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .wa-campo svg { width: 22px; height: 22px; color: var(--wa-icone); flex: none; }
-  .wa-micro { width: 48px; height: 48px; border-radius: 50%; background: var(--wa-verde-botao); display: grid; place-items: center; flex: none; box-shadow: 0 1px 2px rgba(11,20,26,.2); }
-  .wa-micro svg { width: 22px; height: 22px; color: #fff; }
+  .wa-campo-interativo input {
+    width: 100%; border: none; outline: none; background: transparent;
+    font: 500 14px var(--dlg-fonte); color: var(--wa-texto);
+  }
+  .wa-campo-interativo input::placeholder { color: #8696a0; }
+  .wa-btn-enviar {
+    width: 44px; height: 44px; border-radius: 50%; border: none;
+    background: var(--wa-verde-botao); color: #fff; display: grid; place-items: center;
+    cursor: pointer; flex: none; box-shadow: 0 1px 2px rgba(11,20,26,.2);
+    transition: transform 0.15s, background 0.15s;
+  }
+  .wa-btn-enviar:hover { background: #009677; transform: scale(1.04); }
+  .wa-btn-enviar svg { width: 20px; height: 20px; }
+  .wa-aviso-somente-leitura {
+    padding: 8px 12px; background: #fff; border-radius: 8px; font-size: 13px;
+    color: var(--texto-3); text-align: center; margin: 4px 10px 8px;
+    display: flex; align-items: center; justify-content: space-between;
+    box-shadow: 0 1px 0.5px rgba(11,20,26,.1);
+  }
+  .wa-aviso-somente-leitura button {
+    background: var(--wa-verde); border: none; color: #fff;
+    font: 700 12px var(--dlg-fonte); border-radius: 6px; padding: 4px 8px; cursor: pointer;
+  }
+  .wa-pessoa.wa-pessoa-web {
+    background: rgba(123, 204, 144, 0.18);
+    border-color: rgba(123, 204, 144, 0.6);
+    color: #1a7040;
+    font-weight: 700;
+  }
+  .wa-pessoa.wa-pessoa-web[aria-pressed="true"] {
+    background: var(--wa-verde);
+    border-color: var(--wa-verde);
+    color: #fff;
+  }
+  .modal-telegram {
+    position: fixed; inset: 0; background: rgba(15, 27, 45, 0.75); backdrop-filter: blur(8px);
+    display: grid; place-items: center; z-index: 1000; padding: 20px;
+  }
+  .modal-telegram[hidden] { display: none; }
+  .modal-telegram-caixa {
+    background: var(--dlg-bastidores); border: 1px solid var(--linha-forte); border-radius: var(--dlg-raio-palco);
+    max-width: 380px; width: 100%; padding: 22px; box-shadow: var(--sombra-area); text-align: center;
+  }
+  .modal-topo { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; text-align: left; }
+  .modal-topo h3 { font-size: 16px; font-weight: 700; color: #fff; }
+  .modal-fechar { background: none; border: none; font-size: 24px; color: var(--texto-2); cursor: pointer; }
+  .qr-container { background: #fff; padding: 12px; border-radius: 12px; display: inline-block; margin-bottom: 14px; }
+  .modal-instrucao { font-size: 13.5px; color: var(--texto-2); margin-bottom: 14px; line-height: 1.4; }
+  .modal-botao-tg {
+    display: block; width: 100%; background: #229ED9; color: #fff; text-decoration: none; font-weight: 700;
+    padding: 10px; border-radius: 8px; margin-bottom: 12px; transition: background 0.15s;
+  }
+  .modal-botao-tg:hover { background: #1c8cc3; }
+  .modal-nota { font-size: 11px; color: var(--texto-3); line-height: 1.35; display: block; }
 
   /* ── 2. Avaliação da mensagem ─────────────────────────────────────── */
   .metricas { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
@@ -488,7 +580,7 @@
 <div class="app" id="app" data-modo="vivo">
 
   <header class="topo">
-    <div style="display:flex;align-items:center;gap:18px;">
+    <div class="marca-topo" style="display:flex;align-items:center;gap:18px;">
       <img class="logo" src="../design-system/logo/delegate-logo-horizontal-escuro.svg" alt="Delegate">
       <a href="/consola" style="text-decoration:none;display:inline-flex;align-items:center;gap:7px;background:rgba(22,36,58,0.85);color:#b8ebc8;border:1px solid rgba(195,204,216,0.22);border-radius:99px;padding:4px 13px;font-size:13px;font-weight:700;">🏛️ Consola da Câmara ↗</a>
     </div>
@@ -514,23 +606,32 @@
           <div class="nome">Henriques</div>
           <div class="sub" id="wa-sub">Seu Representante Pessoal Digital</div>
         </div>
-        <div class="acoes" aria-hidden="true">
-          <svg viewBox="0 0 24 24"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z" fill="currentColor"/></svg>
-          <svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="2" fill="currentColor"/><circle cx="12" cy="12" r="2" fill="currentColor"/><circle cx="12" cy="19" r="2" fill="currentColor"/></svg>
+        <div class="acoes">
+          <button type="button" class="btn-telegram-qr" onclick="abrirModalTelegram()" title="Falar no Telegram">📲 Telegram QR</button>
         </div>
       </div>
       <div class="wa-pessoas" id="wa-pessoas" aria-label="Conversas"></div>
       <div class="wa-conversa" id="wa-conversa" aria-live="polite">
         <div class="wa-vazio">À espera da primeira mensagem.</div>
       </div>
-      <div class="wa-escrever" aria-hidden="true">
-        <div class="wa-campo">
-          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="9" cy="10" r="1.2" fill="currentColor"/><circle cx="15" cy="10" r="1.2" fill="currentColor"/><path d="M8 14c2 2.5 6 2.5 8 0" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-          <span>Espelho da conversa real</span>
-          <svg viewBox="0 0 24 24"><path d="M16.5 6.5l-7.8 7.8a2 2 0 0 0 2.8 2.8l8-8a4 4 0 0 0-5.6-5.6l-8 8a6 6 0 0 0 8.5 8.5l7-7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-          <svg viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="12" cy="13" r="3.5" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
+      <div id="wa-area-interativa">
+        <div class="wa-sugestoes" id="wa-sugestoes">
+          <button type="button" class="chip-sugestao" onclick="enviarMensagemWeb('Quero abrir uma esplanada com 5 m²')">☕ Esplanada 5 m²</button>
+          <button type="button" class="chip-sugestao" onclick="enviarMensagemWeb('Como consulto a viabilidade de um terreno no PDM?')">🗺️ Viabilidade PDM</button>
+          <button type="button" class="chip-sugestao" onclick="enviarMensagemWeb('Quais os requisitos para o Cartão Municipal Sénior?')">👵 Cartão Sénior</button>
         </div>
-        <div class="wa-micro"><svg viewBox="0 0 24 24"><path d="M12 14a3 3 0 0 0 3-3V5a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.9V21h2v-3.1a7 7 0 0 0 6-6.9z" fill="currentColor"/></svg></div>
+        <form class="wa-escrever-form" id="wa-form-escrever" onsubmit="tratarEnvioWeb(event)">
+          <div class="wa-campo-interativo">
+            <input type="text" id="wa-input" placeholder="Escreva uma mensagem ao Henriques…" autocomplete="off">
+          </div>
+          <button type="submit" class="wa-btn-enviar" aria-label="Enviar mensagem">
+            <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" fill="currentColor"/></svg>
+          </button>
+        </form>
+        <div class="wa-aviso-somente-leitura" id="wa-aviso-somente-leitura" style="display:none;">
+          <span>Sessão do Telegram (apenas leitura)</span>
+          <button type="button" onclick="voltarParaSessaoWeb()">← Voltar à sua sessão</button>
+        </div>
       </div>
     </section>
 
@@ -571,15 +672,43 @@
     </div>
   </main>
   <input type="file" id="ficheiro" accept="application/json,.json" hidden>
+
+  <div class="modal-telegram" id="modal-telegram" hidden onclick="fecharModalTelegram(event)">
+    <div class="modal-telegram-caixa" onclick="event.stopPropagation()">
+      <div class="modal-topo">
+        <h3>📲 Falar com o Henriques no Telegram</h3>
+        <button type="button" class="modal-fechar" onclick="fecharModalTelegram()">&times;</button>
+      </div>
+      <div class="modal-corpo">
+        <div class="qr-container">
+          <img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=https://t.me/afonso_cm_bot" alt="QR Code Telegram" width="180" height="180">
+        </div>
+        <p class="modal-instrucao">Aponte a câmara do seu smartphone para abrir o bot oficial <b>@afonso_cm_bot</b>.</p>
+        <a class="modal-botao-tg" href="https://t.me/afonso_cm_bot" target="_blank" rel="noopener">
+          Abrir @afonso_cm_bot no Telegram ↗
+        </a>
+        <small class="modal-nota">🔒 A sua sessão do Telegram aparecerá numa aba dedicada ao lado, sem misturar com a conversa Web.</small>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script>
 'use strict';
 
+if (window.self !== window.top) document.body.classList.add('em-iframe');
+
 /* ── Configuração ─────────────────────────────────────────────────────── */
 const parametros = new URLSearchParams(location.search);
 const NUCLEO = (parametros.get('nucleo') || 'http://localhost:4000').replace(/\/$/, '');
 const DESDE_INICIAL = Number(parametros.get('desde') || 0) || 0;
+
+const PESSOA_WEB = (() => {
+  const chave = 'delegate_pessoa_web';
+  let id = sessionStorage.getItem(chave);
+  if (!id) { id = `pessoa-web-${Math.random().toString(36).slice(2, 8)}`; sessionStorage.setItem(chave, id); }
+  return id;
+})();
 
 /** O servidor devolve no máximo 200 eventos antigos por ligação. */
 const LOTE_HISTORICO = 200;
@@ -957,21 +1086,31 @@ function desenharPessoas() {
   caixa.replaceChildren();
   if (estado.conversas.size < 2) return;
   for (const p of estado.conversas.keys()) {
-    caixa.append(el('button', {
-      class: 'wa-pessoa', 'aria-pressed': String(p === estado.pessoaVisivel), title: p,
+    const eWeb = p === PESSOA_WEB;
+    const btn = el('button', {
+      class: `wa-pessoa${eWeb ? ' wa-pessoa-web' : ''}`,
+      'aria-pressed': String(p === estado.pessoaVisivel),
+      title: eWeb ? 'A sua sessão Web (interativa)' : p,
       onclick: () => {
         estado.pessoaVisivel = p;
         estado.seguirPessoa = false;
         desenharPessoas();
         desenharConversa();
         agendarCofres();
+        atualizarModoEscrita();
       },
-    }, pseudonimoCurto(p)));
+    }, eWeb ? '🌐 Você (Web)' : `📱 ${pseudonimoCurto(p)}`);
+    caixa.append(btn);
   }
   caixa.append(el('button', {
     class: 'wa-pessoa', 'aria-pressed': String(estado.seguirPessoa), title: 'Mostra sempre a conversa mais recente',
-    onclick: () => { estado.seguirPessoa = true; desenharPessoas(); },
+    onclick: () => {
+      estado.seguirPessoa = true;
+      desenharPessoas();
+      atualizarModoEscrita();
+    },
   }, 'seguir'));
+  atualizarModoEscrita();
 }
 
 let conversaPendente = false;
@@ -986,8 +1125,9 @@ function desenharConversa() {
   caixa.replaceChildren();
   const c = estado.conversas.get(estado.pessoaVisivel);
   if (!c || !c.mensagens.length) {
-    caixa.append(el('div', { class: 'wa-vazio' }, 'À espera da primeira mensagem.'));
+    caixa.append(el('div', { class: 'wa-vazio' }, estado.pessoaVisivel === PESSOA_WEB ? 'Olá! Escreva uma mensagem abaixo ou escolha um tema.' : 'À espera da primeira mensagem.'));
     mostrarAEscrever(false);
+    atualizarModoEscrita();
     return;
   }
   caixa.append(
@@ -1002,6 +1142,7 @@ function desenharConversa() {
   caixa.append(el('div', { class: 'a-escrever', id: 'a-escrever' }, el('i'), el('i'), el('i')));
   mostrarAEscrever(c.aEscrever);
   caixa.scrollTop = caixa.scrollHeight;
+  atualizarModoEscrita();
 }
 
 function mostrarMensagem(pessoa, m, animar) {
@@ -1044,15 +1185,26 @@ function noMensagem(m, animar, cauda) {
     bolha.title = 'Ver a avaliação desta mensagem';
     bolha.addEventListener('click', () => inspecionar(m.turno));
   }
-  // Os botões do Telegram aparecem como os botões de resposta do WhatsApp.
   const teclas = (m.botoes ?? []).flat();
   if (teclas.length) {
+    const eWebAtivo = m.ev?.pessoa === PESSOA_WEB || m.webPessoa === PESSOA_WEB;
     const respostas = el('div', { class: 'respostas' });
     for (const b of teclas) {
-      const tecla = el('div', { class: `tecla${b.carregada ? ' carregada' : ''}` });
-      tecla.innerHTML = b.carregada ? '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z" fill="currentColor"/></svg>' : ICONE_RESPOSTA;
-      tecla.append(b.texto);
-      respostas.append(tecla);
+      if (eWebAtivo && !b.carregada) {
+        const tecla = el('button', {
+          class: 'tecla clicavel',
+          type: 'button',
+          onclick: () => carregarTeclaWeb(b),
+        });
+        tecla.innerHTML = ICONE_RESPOSTA;
+        tecla.append(b.texto);
+        respostas.append(tecla);
+      } else {
+        const tecla = el('div', { class: `tecla${b.carregada ? ' carregada' : ''}` });
+        tecla.innerHTML = b.carregada ? '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z" fill="currentColor"/></svg>' : ICONE_RESPOSTA;
+        tecla.append(b.texto);
+        respostas.append(tecla);
+      }
     }
     no.append(respostas);
   }
@@ -1814,8 +1966,341 @@ setInterval(() => {
   }
 }, 1000);
 
+/* \u2500\u2500 Modal Telegram \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
+function abrirModalTelegram() { $('modal-telegram').hidden = false; }
+function fecharModalTelegram(ev) { if (!ev || ev.target === $('modal-telegram')) $('modal-telegram').hidden = true; }
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') $('modal-telegram').hidden = true; });
+
+/* \u2500\u2500 Modo de escrita: interativo (Web) vs. apenas leitura (Telegram) \u2500\u2500\u2500\u2500\u2500\u2500 */
+function atualizarModoEscrita() {
+  const eWeb = estado.pessoaVisivel === PESSOA_WEB || !estado.pessoaVisivel;
+  const form = $('wa-form-escrever');
+  const sugestoes = $('wa-sugestoes');
+  const aviso = $('wa-aviso-somente-leitura');
+  if (!form) return;
+  form.style.display = eWeb ? '' : 'none';
+  if (sugestoes) sugestoes.style.display = eWeb ? '' : 'none';
+  if (aviso) aviso.style.display = eWeb ? 'none' : '';
+}
+
+function voltarParaSessaoWeb() {
+  estado.pessoaVisivel = PESSOA_WEB;
+  estado.seguirPessoa = false;
+  desenharPessoas();
+  desenharConversa();
+  agendarCofres();
+  atualizarModoEscrita();
+}
+
+/* \u2500\u2500 Motor client-side do Henriques (Vercel / offline) \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
+let seqWeb = 90000;
+function evWeb(tipo, dados = {}) {
+  return {
+    seq: ++seqWeb, id: `web-${seqWeb}`, v: 1,
+    ts: new Date().toISOString(),
+    tipo, origem: 'web', sessao: 'web', missao: null,
+    pessoa: PESSOA_WEB, ator: 'agente:web', simulacao: true,
+    hash: null, hash_anterior: null,
+    dados,
+  };
+}
+
+const RESPOSTAS_WEB = {
+  'esplanada': {
+    servico: 'ocupacao-espaco-publico-esplanada',
+    categoria: 'catalogo', mandato: 'D2',
+    ferramenta: 'calcular_taxa_esplanada',
+    consentimento: true,
+    texto: [
+      '\u2615 <b>Esplanada no Espa\u00e7o P\u00fablico \u2014 Guimar\u00e3es</b>',
+      '',
+      'Para instalar uma esplanada precisa de uma <b>Mera Comunica\u00e7\u00e3o Pr\u00e9via (MCP)</b> ao abrigo do Regulamento Municipal de Ocupa\u00e7\u00e3o do Espa\u00e7o P\u00fablico.',
+      '',
+      '<b>Requisitos m\u00ednimos (Art. 8.\u00ba do ROEP):</b>',
+      '1. \ud83d\udccd \u00c1rea m\u00e1xima: 50% da frente do estabelecimento',
+      '2. \ud83d\udeb6 Corredor pedonal livre: m\u00edn. <b>2,10 m</b>',
+      '3. \ud83d\udcc4 Seguro de responsabilidade civil obrigat\u00f3rio',
+      '4. \ud83d\udd11 Licen\u00e7a anual \u2014 taxa ca. <b>45 \u20ac/m\u00b2/ano</b> (RTTL 2025, Art. 22.\u00ba)',
+      '',
+      '<i>Fonte: Regulamento de Ocupa\u00e7\u00e3o do Espa\u00e7o P\u00fablico, CMGuimar\u00e3es, vers\u00e3o 2024-01-15.</i>',
+    ].join('\n'),
+    botoes: [[
+      { texto: '\ud83d\udcc4 Ver requisitos completos', dados: 'ver_requisitos_esplanada' },
+      { texto: '\ud83d\udcb0 Calcular taxa', dados: 'calcular_taxa_esplanada' },
+    ], [
+      { texto: '\u2705 Preparar o processo', dados: 'iniciar_esplanada' },
+    ]],
+  },
+  'pdm': {
+    servico: 'pedido-informacao-previa-urbanismo',
+    categoria: 'catalogo', mandato: 'D1',
+    ferramenta: 'consultar_catalogo',
+    consentimento: false,
+    texto: [
+      '\ud83d\uddfa\ufe0f <b>Pedido de Informa\u00e7\u00e3o Pr\u00e9via (PIP) \u2014 PDM Guimar\u00e3es</b>',
+      '',
+      'A viabilidade urban\u00edstica \u00e9 apurada atrav\u00e9s de um <b>PIP</b> ao abrigo do <b>Art. 14.\u00ba do RJUE</b> (DL 555/99).',
+      '',
+      '<b>O que o Henriques verifica no PDM:</b>',
+      '\u2022 Classifica\u00e7\u00e3o e qualifica\u00e7\u00e3o do solo (urbano/r\u00fastico)',
+      '\u2022 \u00cdndices urban\u00edsticos aplic\u00e1veis (COS, CUS, \u00e1rea m\u00e1xima de implanta\u00e7\u00e3o)',
+      '\u2022 Serv\u00edd\u00f5es e condi\u00e7ionantes',
+      '',
+      '<i>Fonte: PDM Guimar\u00e3es, Republica\u00e7\u00e3o 2021, DECO-T n.\u00ba 47 (consulta 2025-10).</i>',
+    ].join('\n'),
+    botoes: [[
+      { texto: '\ud83d\udccd Indicar localiza\u00e7\u00e3o do terreno', dados: 'iniciar_pdm' },
+      { texto: '\ud83d\udcc4 Ver minuta do PIP', dados: 'ver_minuta_pip' },
+    ]],
+  },
+  'senior': {
+    servico: 'cartao-municipal-senior',
+    categoria: 'catalogo', mandato: 'D0',
+    ferramenta: 'consultar_catalogo',
+    consentimento: false,
+    texto: [
+      '\ud83d\udc75 <b>Cart\u00e3o Municipal S\u00e9nior \u2014 Guimar\u00e3es</b>',
+      '',
+      '<b>Requisitos (Regulamento Cart\u00e3o S\u00e9nior, Art. 3.\u00ba):</b>',
+      '\u2022 Idade: \u2265 65 anos',
+      '\u2022 Resid\u00eancia: Munic\u00edpio de Guimar\u00e3es (comprovada)',
+      '\u2022 Documenta\u00e7\u00e3o: CC/BI, comprovativo de morada, foto',
+      '',
+      '<b>Benef\u00edcios:</b>',
+      '\u2022 Descontos em transa\u00e7\u00f5es municipais e cultura',
+      '\u2022 Acesso a programa Guimar\u00e3es + Senior',
+      '\u2022 Redu\u00e7\u00e3o de taxas em servi\u00e7os p\u00fablicos',
+      '',
+      'O pedido faz-se no Balc\u00e3o \u00danico ou via portal municipal.',
+      '',
+      '<i>Fonte: Regulamento do Cart\u00e3o Municipal S\u00e9nior, CMGuimar\u00e3es, vers\u00e3o 2023-06-01.</i>',
+    ].join('\n'),
+    botoes: [[
+      { texto: '\ud83d\udcc4 Saber onde pedir', dados: 'onde_pedir_senior' },
+    ]],
+  },
+  'geral': {
+    servico: null,
+    categoria: 'geral', mandato: 'D0',
+    ferramenta: 'nenhuma',
+    consentimento: false,
+    texto: [
+      'Ol\u00e1! Sou o <b>Henriques</b>, o seu representante digital perante a C\u00e2mara Municipal de Guimar\u00e3es.',
+      '',
+      'Posso ajud\u00e1-lo com qualquer assunto municipal \u2014 desde licen\u00e7as de esplanada a urbanismo, passando por taxa de res\u00edd\u00faos ou o Cart\u00e3o S\u00e9nior.',
+      '',
+      'Em que posso ser \u00fatil?',
+    ].join('\n'),
+    botoes: [[
+      { texto: '\u2615 Abrir uma esplanada', dados: 'iniciar_esplanada' },
+      { texto: '\ud83d\uddfa\ufe0f Verificar viabilidade PDM', dados: 'iniciar_pdm' },
+    ], [
+      { texto: '\ud83d\udc75 Cart\u00e3o Municipal S\u00e9nior', dados: 'cartao_senior' },
+    ]],
+  },
+  'saudacao': {
+    servico: null,
+    categoria: 'geral', mandato: 'D0',
+    ferramenta: 'nenhuma',
+    consentimento: false,
+    texto: 'Ol\u00e1! Estou bem, obrigado. Em que posso ajud\u00e1-lo hoje? \ud83d\ude0a',
+    botoes: [[
+      { texto: '\u2615 Abrir esplanada', dados: 'iniciar_esplanada' },
+      { texto: '\ud83d\uddfa\ufe0f PDM / Urbanismo', dados: 'iniciar_pdm' },
+    ]],
+  },
+};
+
+function classificarMensagemWeb(texto) {
+  const t = texto.toLowerCase();
+  if (/\b(ol[aá]|bom\s*dia|boa\s*tarde|boa\s*noite|tudo\s*bem|como\s+est[aá]s?)\b/.test(t)) return 'saudacao';
+  if (/\b(esplanada|ocupa[cç][aã]o|terr[aã][cç]o|cafe|caf[eé]|passeio|espa[cç]o\s*p[uú]blico)\b/.test(t)) return 'esplanada';
+  if (/\b(pdm|urbanismo|terreno|constru[cç][aã]o|pip|informa[cç][aã]o\s*pr[eé]via|viabilidade|rjue)\b/.test(t)) return 'pdm';
+  if (/\b(s[eé]nior|senior|idoso|cart[aã]o\s*(municipal|s[eé]nior)|65\s*anos)\b/.test(t)) return 'senior';
+  return 'geral';
+}
+
+async function emitirEventosWeb(texto, resposta) {
+  const seq0 = seqWeb;
+
+  const evRecebida = evWeb('canal.mensagem.recebida', { texto, entrada: 'texto' });
+  await receber(evRecebida, true);
+
+  await new Promise((r) => setTimeout(r, 320));
+
+  const probs = resposta.servico
+    ? { catalogo: 0.93, conhecimento_d0: 0.07 }
+    : { geral: 0.97, catalogo: 0.03 };
+  const mandatoProbs = { D0: 0.05, D1: 0.08, D2: 0.72, D3: 0.12, D4: 0.03 };
+  if (resposta.mandato !== 'D2') mandatoProbs[resposta.mandato] = 0.87;
+
+  const evDecisao = evWeb('henriques.intencao.classificada', {
+    texto,
+    servico: resposta.servico,
+    foco_servico: resposta.servico,
+    categoria: resposta.categoria,
+    confianca: 0.93,
+    comportamento: resposta.consentimento ? 'preparar_d2' : 'responder_d0',
+    mandato_inferido: resposta.mandato,
+    mcp_ferramenta: resposta.ferramenta,
+    exige_consentimento: resposta.consentimento,
+    motor: 'typesafe-jev',
+    modelo: 'typesafe/jev-system-one',
+    tempo_ms: 210,
+    perguntas_poupadas: resposta.categoria === 'geral' ? 4 : 0,
+    probabilidades: probs,
+    arvore_jev: {
+      servico: { probabilidades: probs },
+      mandato: { probabilidades: mandatoProbs },
+      ferramenta: { probabilidades: { [resposta.ferramenta]: 0.91, nenhuma: 0.09 } },
+      consentimento: { noul: resposta.consentimento ? 0.87 : 0.06 },
+    },
+  });
+  await receber(evDecisao, true);
+
+  if (resposta.servico) {
+    await new Promise((r) => setTimeout(r, 280));
+    await receber(evWeb('cofre.item.guardado', {
+      id: `IT-WEB-${seqWeb}`,
+      camada: 'intencoes',
+      tipo: 'intencao_servico',
+      titulo: SERVICOS[resposta.servico] ?? resposta.servico,
+      finalidade: 'Acompanhamento de pedido municipal via Delegate Web',
+      sensibilidade: 'normal',
+      dados: { servico: resposta.servico },
+    }), true);
+
+    if (resposta.consentimento) {
+      await new Promise((r) => setTimeout(r, 200));
+      await receber(evWeb('mandato.concedido', {
+        id: `MAN-WEB-${seqWeb}`,
+        nivel: resposta.mandato,
+        ambito: resposta.servico,
+        objeto: SERVICOS[resposta.servico] ?? resposta.servico,
+        validade_dias: 180,
+      }), true);
+      await new Promise((r) => setTimeout(r, 180));
+      await receber(evWeb('missao.criada', {
+        servico: resposta.servico,
+        servico_titulo: SERVICOS[resposta.servico] ?? resposta.servico,
+        objetivo: 'Tratar junto da C\u00e2mara Municipal',
+      }), true);
+    }
+  }
+
+  await new Promise((r) => setTimeout(r, 400));
+
+  const evVerificada = evWeb('henriques.resposta.verificada', {
+    motivo: resposta.categoria === 'geral' ? 'saudacao_acolhimento' : 'resposta_com_fonte',
+    categoria: resposta.categoria,
+  });
+  await receber(evVerificada, true);
+
+  const evEnviada = evWeb('canal.mensagem.enviada', {
+    texto: resposta.texto,
+    entregue_no_canal: true,
+    botoes: resposta.botoes ?? [],
+  });
+  const msgHenriques = {
+    lado: 'henriques',
+    ev: { ...evEnviada, pessoa: PESSOA_WEB },
+    webPessoa: PESSOA_WEB,
+    texto: resposta.texto,
+    documento: null,
+    botoes: (resposta.botoes ?? []).map((linha) => linha.map((b) => ({ ...b, carregada: false }))),
+  };
+  const c = estado.conversas.get(PESSOA_WEB);
+  if (c) {
+    c.mensagens.push(msgHenriques);
+    definirAEscrever(c, false);
+    mostrarMensagem(PESSOA_WEB, msgHenriques, true);
+  }
+  await receber(evEnviada, true);
+}
+
+function tratarEnvioWeb(ev) {
+  ev.preventDefault();
+  const input = $('wa-input');
+  const texto = input?.value?.trim();
+  if (!texto) return;
+  input.value = '';
+  const sugestoes = $('wa-sugestoes');
+  if (sugestoes) sugestoes.style.display = 'none';
+  enviarMensagemWeb(texto);
+}
+
+function enviarMensagemWeb(texto) {
+  const tipo = classificarMensagemWeb(texto);
+  const resposta = RESPOSTAS_WEB[tipo] ?? RESPOSTAS_WEB['geral'];
+  estado.pessoaVisivel = PESSOA_WEB;
+  estado.seguirPessoa = false;
+  definirAEscrever(estado.conversas.get(PESSOA_WEB), true);
+  emitirEventosWeb(texto, resposta).catch(console.error);
+}
+
+function carregarTeclaWeb(b) {
+  if (!b) return;
+  const sugestoes = $('wa-sugestoes');
+  if (sugestoes) sugestoes.style.display = 'none';
+  b.carregada = true;
+  desenharConversaSeVisivel();
+  const texto = b.dados ?? b.texto;
+  const mapeamento = {
+    'iniciar_esplanada': 'Quero abrir uma esplanada',
+    'iniciar_pdm': 'Quero consultar a viabilidade de um terreno no PDM',
+    'cartao_senior': 'Quais os requisitos para o Cart\u00e3o Municipal S\u00e9nior?',
+    'calcular_taxa_esplanada': 'Como se calcula a taxa da esplanada?',
+    'ver_requisitos_esplanada': 'Quais os requisitos completos para a esplanada?',
+    'ver_minuta_pip': 'Como \u00e9 a minuta do Pedido de Informa\u00e7\u00e3o Pr\u00e9via?',
+    'onde_pedir_senior': 'Onde posso pedir o Cart\u00e3o S\u00e9nior?',
+    'ver_carta_lealdade': 'Mostra a tua Carta de Lealdade',
+    'preparar:ocupacao-espaco-publico-esplanada': 'Preparar o processo de esplanada',
+    'pergunta_taxa': 'Quanto vou pagar pela esplanada?',
+  };
+  const msgTexto = mapeamento[texto] ?? b.texto;
+  enviarMensagemWeb(msgTexto);
+}
+
+function iniciarChatWeb() {
+  const boasVindas = {
+    servico: null, categoria: 'geral', mandato: 'D0',
+    ferramenta: 'nenhuma', consentimento: false,
+    texto: [
+      'Ol\u00e1! Sou o <b>Henriques</b> \u2014 o seu representante digital perante a C\u00e2mara Municipal de Guimar\u00e3es. \ud83d\udc4b',
+      '',
+      'Respondo com a <b>fonte oficial \u00e0 vista</b> e trato de qualquer assunto municipal por si, com mandato verific\u00e1vel.',
+      '',
+      'Em que posso ser \u00fatil hoje?',
+    ].join('\n'),
+    botoes: [[
+      { texto: '\u2615 Esplanada 5 m\u00b2', dados: 'iniciar_esplanada' },
+      { texto: '\ud83d\uddfa\ufe0f Viabilidade PDM', dados: 'iniciar_pdm' },
+    ], [
+      { texto: '\ud83d\udc75 Cart\u00e3o S\u00e9nior', dados: 'cartao_senior' },
+    ]],
+  };
+
+  const ts = new Date().toISOString();
+  const evBv = { seq: ++seqWeb, id: `web-${seqWeb}`, v: 1, ts, tipo: 'canal.mensagem.enviada', origem: 'web', sessao: 'web', missao: null, pessoa: PESSOA_WEB, ator: 'agente:web', simulacao: true, hash: null, hash_anterior: null, dados: { texto: boasVindas.texto, entregue_no_canal: true, botoes: boasVindas.botoes } };
+  const c = conversa(PESSOA_WEB);
+  const msg = {
+    lado: 'henriques',
+    ev: evBv,
+    webPessoa: PESSOA_WEB,
+    texto: boasVindas.texto,
+    documento: null,
+    botoes: (boasVindas.botoes ?? []).map((linha) => linha.map((b) => ({ ...b, carregada: false }))),
+  };
+  c.mensagens.push(msg);
+  estado.pessoaVisivel = PESSOA_WEB;
+  desenharConversa();
+  agendarCofres();
+  atualizarModoEscrita();
+}
+
 desenharCofres();
 ligar();
+iniciarChatWeb();
 </script>
 </body>
 </html>
