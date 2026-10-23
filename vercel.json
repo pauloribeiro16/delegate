@@ -3,20 +3,51 @@
   "cleanUrls": true,
   "functions": {
     "api/**/*.ts": {
-      "maxDuration": 30
+      "maxDuration": 30,
+      "includeFiles": "prototipo/{data,registo}/**"
     }
   },
   "rewrites": [
-    { "source": "/", "destination": "/site" },
-    { "source": "/painel", "destination": "/site/delegate-panel" },
-    { "source": "/consola", "destination": "/site/delegate-consola-camara-v2" },
-    { "source": "/consola-v1", "destination": "/site/delegate-consola-camara" },
-    { "source": "/cmd", "destination": "/site/cmd.html" },
-    { "source": "/autenticacao", "destination": "/site/cmd.html" },
-    { "source": "/design-system", "destination": "/design-system/index.html" },
-    { "source": "/assets/:ficheiro", "destination": "/site/assets/:ficheiro" },
-    { "source": "/legendas.json", "destination": "/site/legendas.json" },
-    { "source": "/api/eventos/stream", "destination": "/api/eventos" }
+    {
+      "source": "/",
+      "destination": "/site"
+    },
+    {
+      "source": "/painel",
+      "destination": "/site/delegate-panel"
+    },
+    {
+      "source": "/consola",
+      "destination": "/site/delegate-consola-camara-v2"
+    },
+    {
+      "source": "/consola-v1",
+      "destination": "/site/delegate-consola-camara"
+    },
+    {
+      "source": "/cmd",
+      "destination": "/site/cmd.html"
+    },
+    {
+      "source": "/autenticacao",
+      "destination": "/site/cmd.html"
+    },
+    {
+      "source": "/design-system",
+      "destination": "/design-system/index.html"
+    },
+    {
+      "source": "/assets/:ficheiro",
+      "destination": "/site/assets/:ficheiro"
+    },
+    {
+      "source": "/legendas.json",
+      "destination": "/site/legendas.json"
+    },
+    {
+      "source": "/api/eventos/stream",
+      "destination": "/api/eventos"
+    }
   ],
   "env": {
     "SESSAO": "demo",
