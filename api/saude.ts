@@ -8,7 +8,7 @@ import { join } from 'node:path';
 
 export const config = { maxDuration: 30 };
 
-export default async function (req: Request): Promise<Response> {
+export async function GET(req: Request): Promise<Response> {
   if (req.method === 'OPTIONS') return preflight();
   const { raizPrototipo } = await import('../prototipo/apps/api/src/nucleo/dados-raiz.js');
   const raiz = raizPrototipo();

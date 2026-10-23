@@ -1,24 +1,20 @@
 /**
- * A Porta Agêntica no Vercel: o mesmo servidor MCP + REST do processo local,
- * sem processo vivo. A fronteira mantém-se pela rede — o núcleo chega aqui
- * como cliente MCP através de PORTA_MCP_URL.
+ * A Porta Agêntica no Vercel: o mesmo servidor MCP do processo local, sem
+ * processo vivo. A fronteira mantém-se pela rede — o núcleo chega aqui como
+ * cliente MCP através de PORTA_MCP_URL.
  *
- *   POST /api/porta/mcp            — protocolo MCP (streamable HTTP)
- *   GET  /api/porta/mcp            — sessão/estado do MCP
- *   GET  /api/porta/ferramentas    — listagem REST das ferramentas
+ *   POST /api/porta/mcp — protocolo MCP (streamable HTTP)
+ *   GET  /api/porta/mcp — abertura de sessão SSE do MCP
  *
  * O estado dos processos do SU persiste na base alojada (su_simulado.processos).
  */
-import type { IncomingMessage, ServerResponse } from 'node:http';
-import type { Pool } from 'pg';
 import { join } from 'node:path';
 
 export const config = { maxDuration: 60 };
 
 interface InstanciaPorta {
-  processarPedido: (req: IncomingMessage, res: ServerResponse) => Promise<void>;
+  mcpHandler: { fetch(req: Request): Promise<Response> };
   persistirSU: () => Promise<void>;
-  pool: Pool;
 }
 
 const globalPorta = globalThis as unknown as { __portaInstancia?: Promise<InstanciaPorta> };
@@ -47,39 +43,53 @@ function porta(): Promise<InstanciaPorta> {
       await servicosUrbanos.carregar(pool);
       console.log(`✓ Porta Agêntica alojada pronta (${instancia.catalogo.total} serviços no catálogo)`);
       return {
-        processarPedido: instancia.processarPedido,
+        mcpHandler: instancia.mcpHandler,
         persistirSU: () => servicosUrbanos.persistir(pool),
-        pool,
       };
     })();
   }
   return globalPorta.__portaInstancia;
 }
 
-export default async function (req: IncomingMessage, res: ServerResponse): Promise<void> {
+async function tratar(req: Request): Promise<Response> {
   try {
-    const { processarPedido, persistirSU } = await porta();
-    // O despacho da porta reconhece /mcp e /ferramentas: traduzir os percursos
-    // da função (/api/porta/…) para os da porta.
-    const caminho = new URL(req.url ?? '/', 'http://interno').pathname;
-    const pergunta = new URL(req.url ?? '/', 'http://interno').search ?? '';
-    if (caminho.endsWith('/ferramentas')) {
-      (req as { url?: string }).url = `/ferramentas${pergunta}`;
-    } else {
-      (req as { url?: string }).url = `/mcp${pergunta}`;
-    }
-    await processarPedido(req, res);
+    const { mcpHandler, persistirSU } = await porta();
+    // O handler MCP reconhece /mcp: traduzir o percurso da função.
+    const url = new URL(req.url);
+    const pedido = new Request(`${url.origin}/mcp${url.search}`, req);
+    const resposta = await mcpHandler.fetch(pedido);
     // Os processos do SU mudam dentro do despacho: gravar de volta na base.
     await persistirSU().catch((err: unknown) => {
       console.warn('⚠ persistência do SU:', (err as Error).message);
     });
+    return resposta;
   } catch (err: any) {
     console.error('✖ função da Porta:', err?.message ?? err);
-    if (!res.headersSent) {
-      res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8', 'Access-Control-Allow-Origin': '*' });
-      res.end(JSON.stringify({ erro: err?.message ?? String(err) }));
-    } else {
-      res.end();
-    }
+    return new Response(JSON.stringify({ erro: err?.message ?? String(err) }), {
+      status: 500,
+      headers: {
+        'Content-Type': 'application/json; charset=utf-8',
+        'Access-Control-Allow-Origin': '*',
+      },
+    });
   }
+}
+
+export async function GET(req: Request): Promise<Response> {
+  return tratar(req);
+}
+
+export async function POST(req: Request): Promise<Response> {
+  return tratar(req);
+}
+
+export async function OPTIONS(): Promise<Response> {
+  return new Response(null, {
+    status: 204,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+      'Access-Control-Allow-Headers': '*',
+    },
+  });
 }

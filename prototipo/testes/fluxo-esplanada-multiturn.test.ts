@@ -48,6 +48,9 @@ class CanalMock implements CanalGrammy {
   async editar() {}
   async parar() {}
   _aoReceber() {}
+  _bot(): never {
+    throw new Error('sem bot no teste');
+  }
   async enviar(conversa: string, texto: string, botoes?: Botoes) {
     this.mensagens.push({ conversa, texto, botoes });
   }

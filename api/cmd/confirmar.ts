@@ -6,7 +6,7 @@ import { kernel, json, corpoJson, preflight } from '../_kernel.js';
 
 export const config = { maxDuration: 30 };
 
-export default async function (req: Request): Promise<Response> {
+export async function POST(req: Request): Promise<Response> {
   if (req.method === 'OPTIONS') return preflight();
   if (req.method !== 'POST') return json({ ok: false, erro: 'só POST' }, 405);
   try {

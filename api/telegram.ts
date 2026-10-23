@@ -12,7 +12,11 @@ import { kernel, json } from './_kernel.js';
 
 export const config = { maxDuration: 30 };
 
-export default async function (req: Request): Promise<Response> {
+export async function GET(req: Request): Promise<Response> { return handler(req); }
+
+export async function POST(req: Request): Promise<Response> { return handler(req); }
+
+async function handler(req: Request): Promise<Response> {
   if (req.method === 'GET') {
     // Instalar o webhook no endereço onde esta função corre.
     try {

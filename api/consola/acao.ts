@@ -11,7 +11,7 @@ import { SESSAO } from '../../prototipo/apps/api/src/nucleo/bd.js';
 
 export const config = { maxDuration: 60 };
 
-export default async function (req: Request): Promise<Response> {
+export async function POST(req: Request): Promise<Response> {
   if (req.method === 'OPTIONS') return preflight();
   if (req.method !== 'POST') return json({ erro: 'só POST' }, 405);
   try {

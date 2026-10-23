@@ -4,7 +4,7 @@
  */
 export const config = { maxDuration: 10 };
 
-export default async function (): Promise<Response> {
+export async function GET(): Promise<Response> {
   return new Response(JSON.stringify({ pong: true, quando: new Date().toISOString() }), {
     headers: { 'Content-Type': 'application/json' },
   });

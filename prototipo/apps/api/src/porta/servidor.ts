@@ -12,7 +12,7 @@ import { McpServer, createMcpHandler } from '@modelcontextprotocol/server';
 import { z } from 'zod';
 import { CatalogoPorta } from './servicos.js';
 import type { Registo } from '../nucleo/eventos/registo.js';
-import { servicosUrbanos, type EstadoProcesso } from '../su/processos.js';
+import { servicosUrbanos, type EstadoProcesso, type ProcessoSU } from '../su/processos.js';
 
 export interface OpcoesPorta {
   portaHttp?: number;
@@ -28,6 +28,7 @@ export async function criarServidorPorta(opcoes: OpcoesPorta = {}): Promise<{
   mcp: McpServer;
   catalogo: CatalogoPorta;
   processarPedido: (req: IncomingMessage, res: ServerResponse) => Promise<void>;
+  mcpHandler: { fetch(req: Request): Promise<Response>; close?(): Promise<void> };
   fechar(): Promise<void>;
 }> {
   const catalogo = opcoes.catalogo ?? new CatalogoPorta();
@@ -329,7 +330,7 @@ export async function criarServidorPorta(opcoes: OpcoesPorta = {}): Promise<{
         };
       }
 
-      let p = servicosUrbanos.obter(args.processo);
+      let p: ProcessoSU | undefined = servicosUrbanos.obter(args.processo);
       if (!p && args.processo.startsWith('PIP')) {
         p = servicosUrbanos.criarRascunhoPip({
           pessoa: 'ines_guimaraes',
@@ -344,7 +345,7 @@ export async function criarServidorPorta(opcoes: OpcoesPorta = {}): Promise<{
         p = servicosUrbanos.obterOuCriar(args.processo, { sessao });
       }
 
-      p = servicosUrbanos.submeter(args.processo);
+      p = servicosUrbanos.submeter(args.processo) ?? undefined;
       if (!p) {
         return {
           isError: true,
@@ -919,6 +920,7 @@ export async function criarServidorPorta(opcoes: OpcoesPorta = {}): Promise<{
     mcp,
     catalogo,
     processarPedido,
+    mcpHandler,
     async fechar() {
       await mcpHandler.close?.();
       await new Promise<void>((r) => servidor.close(() => r()));
