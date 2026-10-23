@@ -40,12 +40,12 @@ const MIMES: Record<string, string> = {
 };
 
 const ESTATICOS: Record<string, { ficheiro: string; tipo: string }> = {
-  '/': { ficheiro: '../../../reference-docs/delegate-panel.html', tipo: 'text/html; charset=utf-8' },
+  '/': { ficheiro: '../../../index.html', tipo: 'text/html; charset=utf-8' },
   '/painel': { ficheiro: '../../../reference-docs/delegate-panel.html', tipo: 'text/html; charset=utf-8' },
   '/painel.html': { ficheiro: '../../../reference-docs/delegate-panel.html', tipo: 'text/html; charset=utf-8' },
-  '/consola': { ficheiro: '../../../reference-docs/delegate-consola-camara.html', tipo: 'text/html; charset=utf-8' },
-  '/consola.html': { ficheiro: '../../../reference-docs/delegate-consola-camara.html', tipo: 'text/html; charset=utf-8' },
-  '/consola-camara': { ficheiro: '../../../reference-docs/delegate-consola-camara.html', tipo: 'text/html; charset=utf-8' },
+  '/consola': { ficheiro: '../../../reference-docs/delegate-consola-camara-v2.html', tipo: 'text/html; charset=utf-8' },
+  '/consola.html': { ficheiro: '../../../reference-docs/delegate-consola-camara-v2.html', tipo: 'text/html; charset=utf-8' },
+  '/consola-camara': { ficheiro: '../../../reference-docs/delegate-consola-camara-v2.html', tipo: 'text/html; charset=utf-8' },
   '/consola-camara.html': { ficheiro: '../../../reference-docs/delegate-consola-camara.html', tipo: 'text/html; charset=utf-8' },
   '/consola-v2': { ficheiro: '../../../reference-docs/delegate-consola-camara-v2.html', tipo: 'text/html; charset=utf-8' },
   '/consola-v2.html': { ficheiro: '../../../reference-docs/delegate-consola-camara-v2.html', tipo: 'text/html; charset=utf-8' },

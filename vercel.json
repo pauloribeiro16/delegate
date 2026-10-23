@@ -1,0 +1,14 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "cleanUrls": true,
+  "rewrites": [
+    { "source": "/", "destination": "/index.html" },
+    { "source": "/painel", "destination": "/reference-docs/delegate-panel.html" },
+    { "source": "/painel.html", "destination": "/reference-docs/delegate-panel.html" },
+    { "source": "/consola", "destination": "/reference-docs/delegate-consola-camara-v2.html" },
+    { "source": "/consola.html", "destination": "/reference-docs/delegate-consola-camara-v2.html" },
+    { "source": "/consola-v1", "destination": "/reference-docs/delegate-consola-camara.html" },
+    { "source": "/design-system", "destination": "/design-system/index.html" },
+    { "source": "/design-system/(.*)", "destination": "/design-system/$1" }
+  ]
+}

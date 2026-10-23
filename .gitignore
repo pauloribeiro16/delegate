@@ -5,6 +5,8 @@
 .env
 .env.*
 !.env.example
+env
+**/env
 
 # Dependências
 node_modules/
