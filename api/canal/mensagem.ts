@@ -4,7 +4,7 @@
  */
 import { kernel, json, corpoJson, preflight } from '../_kernel.ts';
 
-export const config = { runtime: 'nodejs', maxDuration: 60 };
+export const config = { maxDuration: 60 };
 
 export default async function (req: Request): Promise<Response> {
   if (req.method === 'OPTIONS') return preflight();

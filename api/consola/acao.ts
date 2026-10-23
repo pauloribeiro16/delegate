@@ -9,7 +9,7 @@ import { kernel, json, corpoJson, preflight } from '../_kernel.ts';
 import { PESSOA_PADRAO } from '../../prototipo/apps/api/src/nucleo/kernel.ts';
 import { SESSAO } from '../../prototipo/apps/api/src/nucleo/bd.ts';
 
-export const config = { runtime: 'nodejs', maxDuration: 60 };
+export const config = { maxDuration: 60 };
 
 export default async function (req: Request): Promise<Response> {
   if (req.method === 'OPTIONS') return preflight();

@@ -12,7 +12,7 @@
 import type { IncomingMessage, ServerResponse } from 'node:http';
 import { join } from 'node:path';
 
-export const config = { runtime: 'nodejs', maxDuration: 60 };
+export const config = { maxDuration: 60 };
 
 interface InstanciaPorta {
   processarPedido: (req: IncomingMessage, res: ServerResponse) => Promise<void>;

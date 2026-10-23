@@ -2,7 +2,7 @@
  * Diagnóstico da implantação: testa cada importação do kernel numa função
  * própria e diz qual falha. Retirar depois de estabilizar.
  */
-export const config = { runtime: 'nodejs', maxDuration: 30 };
+export const config = { maxDuration: 30 };
 
 export default async function (): Promise<Response> {
   const passos: Record<string, string> = {};
