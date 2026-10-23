@@ -438,7 +438,7 @@
 
       <div class="navegacao" id="navegacao">
         <nav class="nav" aria-label="Consola">
-          <a href="#solicitacoes" data-vista="solicitacoes" aria-current="page"><svg class="icon" aria-hidden="true"><use href="#i-caixa"/></svg>Solicitações <span class="contador">12</span></a>
+          <a href="#solicitacoes" data-vista="solicitacoes" aria-current="page"><svg class="icon" aria-hidden="true"><use href="#i-caixa"/></svg>Solicitações <span class="contador" id="contador">12</span></a>
           <a href="#missoes" data-vista="missoes"><svg class="icon" aria-hidden="true"><use href="#i-missao"/></svg>Missões delegadas</a>
           <a href="#relatorios" data-vista="relatorios"><svg class="icon" aria-hidden="true"><use href="#i-grafico"/></svg>Relatórios</a>
           <a href="#intencoes" data-vista="intencoes"><svg class="icon" aria-hidden="true"><use href="#i-local"/></svg>Intenções do Concelho</a>
@@ -832,6 +832,12 @@
   <div class="dica" id="dica" role="tooltip" hidden></div>
 
   <script>
+    // O núcleo (porta 4000) é quem tem os casos reais. Na mesma origem
+    // (localhost) basta o caminho; num alojamento externo (Vercel), abre-se
+    // com ?nucleo=http://<ip-do-portátil>:4000.
+    const PARAMETROS = new URLSearchParams(location.search);
+    const NUCLEO = (PARAMETROS.get('nucleo') || '').replace(/\/$/, '');
+
     const ESTADOS = {
       aguarda: { texto: "Aguarda análise", tom: "aguarda" },
       triagem: { texto: "Em triagem", tom: "neutro" },
@@ -875,6 +881,56 @@
     const erro = $("#nota-erro");
     const resultado = $("#resultado");
     const pedidoAtual = () => pedidos.find((p) => p.id === selecionado);
+
+    // ── Casos reais: o que o Henriques submete no canal chega aqui pela API ──
+    const ESTADOS_API = { "Aguarda análise": "aguarda", "Aguarda documentos": "documentos", "Aprovada": "aprovada", "Indeferida": "indeferida", "Resolvida": "resolvida" };
+
+    function casoDaApi(c) {
+      const id = (c.codigo || c.id || c.processo || "").replace(/^#/, "").replaceAll("/", "-");
+      return {
+        id,
+        hora: c.hora || "",
+        assunto: c.titulo || "Pedido municipal",
+        resumo: c.resumo || "",
+        dados: (c.dados || []).map((d) => [d.campo, d.valor]),
+        estado: ESTADOS_API[c.status] || "aguarda",
+        prioridade: false,
+        real: true,
+        processo: c.processo,
+      };
+    }
+
+    async function carregarCasosReais() {
+      let casos;
+      try {
+        const r = await fetch(`${NUCLEO}/api/consola/pedidos`);
+        if (!r.ok) return;
+        casos = await r.json();
+      } catch { return; }
+      const reais = (Array.isArray(casos) ? casos : []).map(casoDaApi).filter((c) => c.id);
+      // Sai o que deixou de existir; entram os novos no topo; quem já cá estava
+      // atualiza o estado (ex.: aprovado na técnica) sem perder a decisão local.
+      for (let i = pedidos.length - 1; i >= 0; i--) {
+        if (pedidos[i].real && !reais.some((n) => n.id === pedidos[i].id)) pedidos.splice(i, 1);
+      }
+      for (const n of reais.slice().reverse()) {
+        const existente = pedidos.find((p) => p.id === n.id);
+        if (existente) Object.assign(existente, n, { decisao: existente.decisao });
+        else pedidos.unshift(n);
+      }
+      if (!pedidos.some((p) => p.id === selecionado) && pedidos.length) selecionado = pedidos[0].id;
+      // No primeiro carregamento, o pedido real mais recente entra logo em análise.
+      if (!carregarCasosReais.primeira && reais.length) {
+        carregarCasosReais.primeira = true;
+        selecionado = reais[0].id;
+      }
+      const contador = $("#contador");
+      if (contador) contador.textContent = String(pedidos.length);
+      const emAguarda = document.querySelector('[data-contador="aguarda"]');
+      if (emAguarda) emAguarda.textContent = String(pedidos.filter((p) => p.estado === "aguarda").length);
+      desenharLista();
+      desenharDetalhe();
+    }
 
     function etiquetaEstado(chave) {
       const e = ESTADOS[chave];
@@ -1013,10 +1069,21 @@
         return;
       }
       const p = pedidoAtual();
+      const decisao = decisaoAtiva;
       if (p.estado === "aguarda" && decisaoAtiva.estado !== "aguarda") aguardaTotal -= 1;
       p.estado = decisaoAtiva.estado;
       p.decisao = { titulo: decisaoAtiva.resultado, nota: texto };
       atualizarMissao(p.id, decisaoAtiva.estado, texto);
+      // A decisão sai para o núcleo: o cidadão é notificado no canal dele
+      // (Telegram e painel, pela Porta Agêntica).
+      if (p.processo) {
+        const acoes = { resolvida: "resolve", documentos: "documents", aprovada: "approve", indeferida: "reject" };
+        fetch(`${NUCLEO}/api/consola/acao`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ processo: p.processo, acao: acoes[decisao.estado] ?? "resolve", nota: texto }),
+        }).catch(() => {});
+      }
       fecharFormulario();
       desenharLista();
       desenharDetalhe();
@@ -1470,6 +1537,8 @@
 
     desenharLista();
     desenharDetalhe();
+    carregarCasosReais();
+    setInterval(carregarCasosReais, 5000);
     mostrarVista();
   </script>
 </body>

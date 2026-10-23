@@ -217,9 +217,6 @@
       <a id="link-abrir-nova-aba" class="link-acao" href="/painel" target="_blank" rel="noopener">
         Abrir em Ecrã Cheio ↗
       </a>
-      <a class="link-acao" href="/design-system" target="_blank" rel="noopener">
-        Design System
-      </a>
     </div>
   </header>
 
@@ -247,6 +244,14 @@
   </main>
 
   <script>
+    // Num alojamento externo (Vercel), o núcleo continua na máquina da demo:
+    // abre o portal com ?nucleo=http://<ip-do-portátil>:4000 e os dois ecrãs
+    // passam a falar com ele. Sem o parâmetro, vale a mesma origem (localhost).
+    const PARAMETROS_PORTAL = new URLSearchParams(location.search);
+    const NUCLEO_PORTAL = (PARAMETROS_PORTAL.get('nucleo') || '').replace(/\/$/, '');
+    const SUFIXO_NUCLEO = NUCLEO_PORTAL ? `?nucleo=${encodeURIComponent(NUCLEO_PORTAL)}` : '';
+    const rota = (caminho) => caminho + SUFIXO_NUCLEO;
+
     function mudarVista(vista) {
       document.getElementById('btn-painel').classList.remove('ativo');
       document.getElementById('btn-consola').classList.remove('ativo');
@@ -261,22 +266,30 @@
       if (vista === 'consola') {
         document.getElementById('btn-consola').classList.add('ativo');
         document.getElementById('iframe-consola').classList.add('ativo');
-        btnLink.href = '/consola';
+        btnLink.href = rota('/consola');
         window.location.hash = 'consola';
       } else if (vista === 'duplo') {
         document.getElementById('btn-duplo').classList.add('ativo');
         document.getElementById('vista-dupla').classList.add('ativo');
-        btnLink.href = '/painel';
+        btnLink.href = rota('/painel');
         window.location.hash = 'duplo';
       } else {
         document.getElementById('btn-painel').classList.add('ativo');
         document.getElementById('iframe-painel').classList.add('ativo');
-        btnLink.href = '/painel';
+        btnLink.href = rota('/painel');
         window.location.hash = 'painel';
       }
     }
 
     window.addEventListener('DOMContentLoaded', () => {
+      if (SUFIXO_NUCLEO) {
+        document.querySelectorAll('iframe[src="/painel"], iframe[src="/consola"]').forEach((quadro) => {
+          quadro.src = rota(quadro.getAttribute('src'));
+        });
+        document.querySelectorAll('a[href="/painel"], a[href="/consola"]').forEach((ligacao) => {
+          ligacao.href = rota(ligacao.getAttribute('href'));
+        });
+      }
       const hash = window.location.hash.replace('#', '');
       if (hash === 'consola' || hash === 'duplo' || hash === 'painel') {
         mudarVista(hash);

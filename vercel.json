@@ -6,6 +6,7 @@
     { "source": "/painel", "destination": "/reference-docs/delegate-panel" },
     { "source": "/consola", "destination": "/reference-docs/delegate-consola-camara-v2" },
     { "source": "/consola-v1", "destination": "/reference-docs/delegate-consola-camara" },
-    { "source": "/design-system", "destination": "/design-system/index.html" }
+    { "source": "/design-system", "destination": "/design-system/index.html" },
+    { "source": "/assets/:ficheiro", "destination": "/reference-docs/assets/:ficheiro" }
   ]
 }
