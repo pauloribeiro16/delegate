@@ -41,8 +41,8 @@
       "destination": "/design-system/index.html"
     },
     {
-      "source": "/assets/:ficheiro",
-      "destination": "/site/assets/:ficheiro"
+      "source": "/assets/:caminho*",
+      "destination": "/site/assets/:caminho*"
     },
     {
       "source": "/legendas.json",
