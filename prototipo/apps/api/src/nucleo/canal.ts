@@ -372,7 +372,9 @@ export function criarCanalGrammy(token: string): CanalGrammy {
     },
 
     async aEscrever(conversa) {
-      await bot.api.sendChatAction(Number(conversa), 'typing');
+      // O indicador de escrita é cosmético: se o Telegram o recusar (chat
+      // inválido, pessoa que bloqueou o bot), a resposta tem de sair na mesma.
+      await bot.api.sendChatAction(Number(conversa), 'typing').catch(() => {});
     },
 
     async parar() {
