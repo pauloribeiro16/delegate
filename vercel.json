@@ -21,6 +21,10 @@
       "destination": "/site/delegate-consola-camara-v2"
     },
     {
+      "source": "/consolas",
+      "destination": "/site/portal"
+    },
+    {
       "source": "/consola-v1",
       "destination": "/site/delegate-consola-camara"
     },

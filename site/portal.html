@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="pt-PT">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Delegate · Consolas do Sistema</title>
+  <link rel="icon" href="design-system/logo/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="design-system/tokens.css">
+  <style>
+    :root {
+      color-scheme: dark;
+      --fundo: var(--dlg-bastidores);
+      --topo-fundo: rgba(15, 27, 45, 0.95);
+      --painel-borda: rgba(195, 204, 216, 0.16);
+      --destaque-verde: var(--dlg-marca-verde);
+      --destaque-dourado: var(--dlg-marca-dourado);
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    html, body {
+      width: 100%;
+      height: 100%;
+      background: var(--fundo);
+      color: #fff;
+      font-family: var(--dlg-fonte);
+      overflow: hidden;
+    }
+    #topo {
+      height: 58px;
+      background: var(--topo-fundo);
+      border-bottom: 1px solid var(--painel-borda);
+      backdrop-filter: blur(12px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 18px;
+      z-index: 100;
+    }
+    .marca-box {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .marca-box img {
+      height: 26px;
+      width: auto;
+    }
+    .tag-evento {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      padding: 3px 9px;
+      border-radius: 99px;
+      background: rgba(123, 204, 144, 0.14);
+      color: var(--destaque-verde);
+      border: 1px solid rgba(123, 204, 144, 0.28);
+    }
+    .alternador {
+      display: inline-flex;
+      align-items: center;
+      background: rgba(22, 36, 58, 0.85);
+      border: 1px solid var(--painel-borda);
+      border-radius: 10px;
+      padding: 3px;
+      gap: 4px;
+    }
+    .botao-aba {
+      background: transparent;
+      border: none;
+      color: var(--dlg-bastidores-texto);
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 6px 14px;
+      border-radius: 7px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      transition: all 0.18s ease;
+      text-decoration: none;
+    }
+    .botao-aba:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.05);
+    }
+    .botao-aba.ativo {
+      background: var(--destaque-verde);
+      color: var(--dlg-bastidores);
+      box-shadow: 0 2px 8px rgba(123, 204, 144, 0.25);
+    }
+    .acoes-direita {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .link-acao {
+      text-decoration: none;
+      color: var(--dlg-bastidores-texto);
+      font-size: 12px;
+      font-weight: 600;
+      border: 1px solid var(--painel-borda);
+      padding: 5px 11px;
+      border-radius: 7px;
+      background: rgba(255, 255, 255, 0.03);
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .link-acao:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.3);
+    }
+    #palco {
+      width: 100%;
+      height: calc(100% - 58px);
+      position: relative;
+    }
+    .quadro-consola {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: none;
+    }
+    .quadro-consola.ativo {
+      display: block;
+    }
+    #vista-dupla {
+      width: 100%;
+      height: 100%;
+      display: none;
+      grid-template-columns: 1fr 1fr;
+      divide-x: 1px solid var(--painel-borda);
+      background: var(--fundo);
+    }
+    #vista-dupla.ativo {
+      display: grid;
+    }
+    .coluna-dupla {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      border-right: 1px solid var(--painel-borda);
+    }
+    .coluna-dupla:last-child {
+      border-right: none;
+    }
+    .cabecalho-coluna {
+      height: 34px;
+      background: rgba(22, 36, 58, 0.9);
+      border-bottom: 1px solid var(--painel-borda);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 14px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+    .cabecalho-coluna a {
+      color: var(--destaque-verde);
+      text-decoration: none;
+      font-size: 11px;
+    }
+    .cabecalho-coluna a:hover {
+      text-decoration: underline;
+    }
+    .coluna-dupla iframe {
+      flex: 1;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+    @media (max-width: 960px) {
+      #vista-dupla {
+        grid-template-columns: 1fr;
+        grid-template-rows: 1fr 1fr;
+      }
+      .coluna-dupla {
+        border-right: none;
+        border-bottom: 1px solid var(--painel-borda);
+      }
+      .tag-evento {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header id="topo">
+    <div class="marca-box">
+      <img src="design-system/logo/delegate-logo-horizontal-escuro.svg" alt="Delegate">
+      <span class="tag-evento">Hack4Guimarães 2035</span>
+    </div>
+
+    <nav class="alternador" aria-label="Navegação entre consolas">
+      <button id="btn-painel" class="botao-aba ativo" onclick="mudarVista('painel')">
+        📱 Painel ao Vivo
+      </button>
+      <button id="btn-consola" class="botao-aba" onclick="mudarVista('consola')">
+        🏛️ Consola da Câmara
+      </button>
+      <button id="btn-duplo" class="botao-aba" onclick="mudarVista('duplo')">
+        ⚡ Modo Duplo (Lado a Lado)
+      </button>
+    </nav>
+
+    <div class="acoes-direita">
+      <a id="link-abrir-nova-aba" class="link-acao" href="/painel" target="_blank" rel="noopener">
+        Abrir em Ecrã Cheio ↗
+      </a>
+    </div>
+  </header>
+
+  <main id="palco">
+    <iframe id="iframe-painel" class="quadro-consola ativo" src="/painel" title="Painel ao Vivo"></iframe>
+    <iframe id="iframe-consola" class="quadro-consola" src="/consola" title="Consola Municipal da Câmara"></iframe>
+
+    <div id="vista-dupla">
+      <section class="coluna-dupla">
+        <header class="cabecalho-coluna">
+          <span>📱 Cidadão & Orquestração (Henriques · TypeSafe Jev · Cofre)</span>
+          <a href="/painel" target="_blank" rel="noopener">Ecrã inteiro ↗</a>
+        </header>
+        <iframe src="/painel" title="Painel ao Vivo Lado Esquerdo"></iframe>
+      </section>
+
+      <section class="coluna-dupla">
+        <header class="cabecalho-coluna">
+          <span>🏛️ Consola Municipal (Serviços Urbanos · Decisão da Câmara)</span>
+          <a href="/consola" target="_blank" rel="noopener">Ecrã inteiro ↗</a>
+        </header>
+        <iframe src="/consola" title="Consola Municipal Lado Direito"></iframe>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    // Num alojamento externo (Vercel), o núcleo continua na máquina da demo:
+    // abre o portal com ?nucleo=http://<ip-do-portátil>:4000 e os dois ecrãs
+    // passam a falar com ele. Sem o parâmetro, vale a mesma origem (localhost).
+    const PARAMETROS_PORTAL = new URLSearchParams(location.search);
+    const NUCLEO_PORTAL = (PARAMETROS_PORTAL.get('nucleo') || '').replace(/\/$/, '');
+    const SUFIXO_NUCLEO = NUCLEO_PORTAL ? `?nucleo=${encodeURIComponent(NUCLEO_PORTAL)}` : '';
+    const rota = (caminho) => caminho + SUFIXO_NUCLEO;
+
+    function mudarVista(vista) {
+      document.getElementById('btn-painel').classList.remove('ativo');
+      document.getElementById('btn-consola').classList.remove('ativo');
+      document.getElementById('btn-duplo').classList.remove('ativo');
+
+      document.getElementById('iframe-painel').classList.remove('ativo');
+      document.getElementById('iframe-consola').classList.remove('ativo');
+      document.getElementById('vista-dupla').classList.remove('ativo');
+
+      const btnLink = document.getElementById('link-abrir-nova-aba');
+
+      if (vista === 'consola') {
+        document.getElementById('btn-consola').classList.add('ativo');
+        document.getElementById('iframe-consola').classList.add('ativo');
+        btnLink.href = rota('/consola');
+        window.location.hash = 'consola';
+      } else if (vista === 'duplo') {
+        document.getElementById('btn-duplo').classList.add('ativo');
+        document.getElementById('vista-dupla').classList.add('ativo');
+        btnLink.href = rota('/painel');
+        window.location.hash = 'duplo';
+      } else {
+        document.getElementById('btn-painel').classList.add('ativo');
+        document.getElementById('iframe-painel').classList.add('ativo');
+        btnLink.href = rota('/painel');
+        window.location.hash = 'painel';
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      if (SUFIXO_NUCLEO) {
+        document.querySelectorAll('iframe[src="/painel"], iframe[src="/consola"]').forEach((quadro) => {
+          quadro.src = rota(quadro.getAttribute('src'));
+        });
+        document.querySelectorAll('a[href="/painel"], a[href="/consola"]').forEach((ligacao) => {
+          ligacao.href = rota(ligacao.getAttribute('href'));
+        });
+      }
+      const hash = window.location.hash.replace('#', '');
+      if (hash === 'consola' || hash === 'duplo' || hash === 'painel') {
+        mudarVista(hash);
+      }
+    });
+
+    window.addEventListener('keydown', (e) => {
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+      if (e.key === '1') mudarVista('painel');
+      if (e.key === '2') mudarVista('consola');
+      if (e.key === '3') mudarVista('duplo');
+    });
+  </script>
+</body>
+</html>

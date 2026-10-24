@@ -43,6 +43,9 @@ const MIMES: Record<string, string> = {
 
 const ESTATICOS: Record<string, { ficheiro: string; tipo: string }> = {
   '/': { ficheiro: 'index.html', tipo: 'text/html; charset=utf-8' },
+  '/index.html': { ficheiro: 'index.html', tipo: 'text/html; charset=utf-8' },
+  '/consolas': { ficheiro: 'portal.html', tipo: 'text/html; charset=utf-8' },
+  '/portal': { ficheiro: 'portal.html', tipo: 'text/html; charset=utf-8' },
   '/painel': { ficheiro: 'delegate-panel.html', tipo: 'text/html; charset=utf-8' },
   '/painel.html': { ficheiro: 'delegate-panel.html', tipo: 'text/html; charset=utf-8' },
   '/consola': { ficheiro: 'delegate-consola-camara-v2.html', tipo: 'text/html; charset=utf-8' },
@@ -59,6 +62,7 @@ const ESTATICOS: Record<string, { ficheiro: string; tipo: string }> = {
   '/legendas.json': { ficheiro: 'legendas.json', tipo: 'application/json; charset=utf-8' },
   '/favicon.ico': { ficheiro: 'assets/favicon.png', tipo: 'image/png' },
   '/favicon.png': { ficheiro: 'assets/favicon.png', tipo: 'image/png' },
+  '/favicon.svg': { ficheiro: 'assets/favicon.svg', tipo: 'image/svg+xml' },
 };
 
 export interface DadosConfirmacaoCmd {

@@ -1,307 +1,866 @@
 <!doctype html>
 <html lang="pt-PT">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Delegate · Consolas do Sistema</title>
-  <link rel="icon" href="design-system/logo/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="design-system/tokens.css">
-  <style>
-    :root {
-      color-scheme: dark;
-      --fundo: var(--dlg-bastidores);
-      --topo-fundo: rgba(15, 27, 45, 0.95);
-      --painel-borda: rgba(195, 204, 216, 0.16);
-      --destaque-verde: var(--dlg-marca-verde);
-      --destaque-dourado: var(--dlg-marca-dourado);
-    }
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-    html, body {
-      width: 100%;
-      height: 100%;
-      background: var(--fundo);
-      color: #fff;
-      font-family: var(--dlg-fonte);
-      overflow: hidden;
-    }
-    #topo {
-      height: 58px;
-      background: var(--topo-fundo);
-      border-bottom: 1px solid var(--painel-borda);
-      backdrop-filter: blur(12px);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 18px;
-      z-index: 100;
-    }
-    .marca-box {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
-    .marca-box img {
-      height: 26px;
-      width: auto;
-    }
-    .tag-evento {
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      padding: 3px 9px;
-      border-radius: 99px;
-      background: rgba(123, 204, 144, 0.14);
-      color: var(--destaque-verde);
-      border: 1px solid rgba(123, 204, 144, 0.28);
-    }
-    .alternador {
-      display: inline-flex;
-      align-items: center;
-      background: rgba(22, 36, 58, 0.85);
-      border: 1px solid var(--painel-borda);
-      border-radius: 10px;
-      padding: 3px;
-      gap: 4px;
-    }
-    .botao-aba {
-      background: transparent;
-      border: none;
-      color: var(--dlg-bastidores-texto);
-      font-family: inherit;
-      font-size: 13px;
-      font-weight: 700;
-      padding: 6px 14px;
-      border-radius: 7px;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      transition: all 0.18s ease;
-      text-decoration: none;
-    }
-    .botao-aba:hover {
-      color: #fff;
-      background: rgba(255, 255, 255, 0.05);
-    }
-    .botao-aba.ativo {
-      background: var(--destaque-verde);
-      color: var(--dlg-bastidores);
-      box-shadow: 0 2px 8px rgba(123, 204, 144, 0.25);
-    }
-    .acoes-direita {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .link-acao {
-      text-decoration: none;
-      color: var(--dlg-bastidores-texto);
-      font-size: 12px;
-      font-weight: 600;
-      border: 1px solid var(--painel-borda);
-      padding: 5px 11px;
-      border-radius: 7px;
-      background: rgba(255, 255, 255, 0.03);
-      transition: all 0.15s ease;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .link-acao:hover {
-      color: #fff;
-      background: rgba(255, 255, 255, 0.08);
-      border-color: rgba(255, 255, 255, 0.3);
-    }
-    #palco {
-      width: 100%;
-      height: calc(100% - 58px);
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Delegate · Diga o que precisa. O Henriques trata do resto.</title>
+<meta name="description" content="O Delegate dá a cada pessoa e a cada empresa de Guimarães um representante digital, o Henriques, que responde com a fonte oficial à vista e trata dos pedidos à Câmara com autorização explícita. Hack4Guimarães 2035, desafio 3.4.">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="/assets/Manrope-wght.woff2" as="font" type="font/woff2" crossorigin>
+<!--
+  Home do site do Delegate, para o júri e a organização do Hack4Guimarães 2035.
+  Conteúdo: reference-docs/taikai-descricao-projeto.md. Tokens: design-system/tokens.css.
+
+  Endereços das demonstrações (tudo alojado na Vercel, mesmo domínio):
+    Telegram  https://t.me/afonso_cm_bot  (o QR code abaixo aponta para este endereço)
+    Painel    /painel     — a conversa, a árvore de decisão e o Cofre Digital
+    Consola   /consola    — a Consola Municipal da Câmara
+    Consolas  /consolas   — os dois ecrãs lado a lado (modo de apresentação)
+-->
+<style>
+  @font-face {
+    font-family: "Manrope";
+    src: url("/assets/Manrope-wght.woff2") format("woff2");
+    font-weight: 200 800;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  :root {
+    --dlg-marca-verde: #7bcc90;
+    --dlg-marca-dourado: #e0b65d;
+    --dlg-palco: #f4efe6;
+    --dlg-branco: #fffefa;
+    --dlg-tinta: #1d2430;
+    --dlg-cinza: #647080;
+    --dlg-linha: #e6e2da;
+    --dlg-bastidores: #0f1b2d;
+    --dlg-bastidores-texto: #c3ccd8;
+    --dlg-verde: #1a7040;
+    --dlg-verde-suave: #dcefe2;
+    --dlg-dourado: #8a6210;
+    --dlg-dourado-suave: #f6edcf;
+
+    --dlg-fonte: "Manrope", Arial, sans-serif;
+    --dlg-raio-pequeno: 10px;
+    --dlg-raio-medio: 14px;
+    --dlg-raio-grande: 18px;
+    --dlg-raio-palco: 24px;
+    --dlg-raio-pilula: 99px;
+    --dlg-sombra: 0 22px 60px #17203318;
+
+    --largura: 1160px;
+    --margem: clamp(16px, 4vw, 40px);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+  body {
+    background: var(--dlg-palco);
+    color: var(--dlg-tinta);
+    font-family: var(--dlg-fonte);
+    font-size: 1rem;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  img { display: block; max-width: 100%; }
+  a { color: inherit; }
+  :focus-visible { outline: 3px solid var(--dlg-marca-dourado); outline-offset: 3px; border-radius: 4px; }
+
+  .contentor { max-width: var(--largura); margin-inline: auto; padding-inline: var(--margem); }
+
+  .etiqueta {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .pilula {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 10px;
+    border-radius: var(--dlg-raio-pilula);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .pilula--simulacao { background: var(--dlg-dourado-suave); color: var(--dlg-dourado); }
+  .pilula--hipotese { background: var(--dlg-dourado-suave); color: var(--dlg-dourado); }
+  .pilula--real { background: var(--dlg-verde-suave); color: var(--dlg-verde); }
+
+  .botao {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-height: 48px;
+    padding: 12px 22px;
+    border-radius: var(--dlg-raio-pequeno);
+    font-weight: 700;
+    font-size: 1rem;
+    text-decoration: none;
+    transition: background-color .15s ease, border-color .15s ease;
+  }
+  .botao svg { width: 20px; height: 20px; flex: none; }
+  .botao--principal { background: var(--dlg-marca-verde); color: var(--dlg-bastidores); }
+  .botao--principal:hover { background: #95d8a7; }
+  .botao--contorno { border: 1.5px solid rgba(255, 254, 250, .45); color: var(--dlg-branco); }
+  .botao--contorno:hover { border-color: var(--dlg-branco); background: rgba(255, 254, 250, .08); }
+  .botao--verde { background: var(--dlg-verde); color: var(--dlg-branco); }
+  .botao--verde:hover { background: #145a33; }
+  .botao--escuro { background: var(--dlg-bastidores); color: var(--dlg-branco); }
+  .botao--escuro:hover { background: #1b2b44; }
+
+  /* ── Hero ──────────────────────────────────────────────────────────── */
+
+  .hero {
+    position: relative;
+    min-height: clamp(580px, 88vh, 780px);
+    background: var(--dlg-bastidores);
+    color: var(--dlg-branco);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .hero__imagem {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 72% center;
+  }
+
+  /* Véu à esquerda: dá leitura ao texto sem tapar o Henriques, à direita. */
+  .hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background:
+      linear-gradient(90deg,
+        rgba(15, 27, 45, .95) 0%,
+        rgba(15, 27, 45, .88) 32%,
+        rgba(15, 27, 45, .45) 52%,
+        rgba(15, 27, 45, 0) 66%),
+      linear-gradient(0deg, rgba(15, 27, 45, .55) 0%, rgba(15, 27, 45, 0) 30%);
+  }
+
+  .hero > .contentor { position: relative; z-index: 2; width: 100%; }
+
+  .hero__topo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding-block: 28px;
+  }
+  .hero__logo { height: 44px; width: auto; }
+
+  .hero__nav {
+    display: flex;
+    gap: 2px;
+    padding: 4px;
+    border-radius: 14px;
+    background: rgba(15, 27, 45, .72);
+    backdrop-filter: blur(6px);
+  }
+  .hero__nav a {
+    padding: 10px 14px;
+    border-radius: var(--dlg-raio-pequeno);
+    font-size: .9375rem;
+    font-weight: 600;
+    color: var(--dlg-branco);
+    text-decoration: none;
+  }
+  .hero__nav a:hover { color: var(--dlg-branco); background: rgba(255, 254, 250, .08); }
+
+  .hero__corpo {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    padding-block: 24px 72px;
+  }
+  .hero__texto { max-width: 600px; }
+
+  .hero__evento { color: var(--dlg-marca-dourado); margin-bottom: 22px; }
+
+  .hero h1 {
+    font-size: clamp(2.6rem, 5.6vw, 4.75rem);
+    line-height: 1.02;
+    letter-spacing: -0.045em;
+    font-weight: 800;
+  }
+  .hero h1 span { display: block; color: var(--dlg-marca-verde); }
+
+  .hero__lead {
+    margin-top: 26px;
+    max-width: 30em;
+    font-size: clamp(1.0625rem, 1.6vw, 1.25rem);
+    color: var(--dlg-bastidores-texto);
+  }
+  .hero__lead strong { color: var(--dlg-branco); font-weight: 600; }
+
+  .hero__acoes { margin-top: 36px; display: flex; flex-wrap: wrap; gap: 12px; }
+
+  /* ── Secções ───────────────────────────────────────────────────────── */
+
+  section { padding-block: clamp(64px, 9vw, 112px); }
+  .secao--branca { background: var(--dlg-branco); }
+  .secao--escura { background: var(--dlg-bastidores); color: var(--dlg-branco); }
+
+  .cabecalho { max-width: 46rem; margin-bottom: clamp(36px, 5vw, 56px); }
+  .cabecalho .etiqueta { color: var(--dlg-verde); margin-bottom: 14px; }
+  .secao--escura .cabecalho .etiqueta { color: var(--dlg-marca-verde); }
+  .cabecalho h2 {
+    font-size: clamp(1.9rem, 3.6vw, 2.6rem);
+    line-height: 1.1;
+    letter-spacing: -0.04em;
+    font-weight: 800;
+  }
+  .cabecalho p { margin-top: 16px; font-size: 1.1875rem; color: #4a5566; }
+  .secao--escura .cabecalho p { color: var(--dlg-bastidores-texto); }
+
+  .grelha { display: grid; gap: 20px; }
+  .grelha--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .grelha--2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+  .cartao {
+    background: var(--dlg-branco);
+    border: 1px solid var(--dlg-linha);
+    border-radius: var(--dlg-raio-grande);
+    padding: 28px;
+  }
+  .secao--branca .cartao { background: var(--dlg-palco); border-color: transparent; }
+  .cartao h3 { font-size: 1.1875rem; line-height: 1.3; letter-spacing: -0.02em; font-weight: 700; }
+  .cartao p { margin-top: 10px; color: #4a5566; }
+
+  /* ── Experimentar ──────────────────────────────────────────────────── */
+
+  .experimentar {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+    gap: 20px;
+  }
+
+  .telegram {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 32px;
+    align-items: center;
+    background: var(--dlg-bastidores);
+    color: var(--dlg-branco);
+    border-radius: var(--dlg-raio-palco);
+    padding: clamp(24px, 3.5vw, 40px);
+  }
+  .telegram__qr {
+    width: 220px;
+    padding: 16px;
+    background: var(--dlg-branco);
+    border-radius: var(--dlg-raio-medio);
+  }
+  .telegram__qr svg { display: block; width: 100%; height: auto; }
+  .telegram .etiqueta { color: var(--dlg-marca-verde); }
+  .telegram h3 { margin-top: 10px; font-size: 1.75rem; line-height: 1.15; letter-spacing: -0.035em; font-weight: 800; }
+  .telegram p { margin-top: 12px; color: var(--dlg-bastidores-texto); }
+  .telegram .botao { margin-top: 22px; }
+  .telegram__nota { font-size: .8125rem; }
+
+  .acesso { display: grid; gap: 20px; }
+  .acesso .cartao { display: flex; flex-direction: column; }
+  .acesso .cartao .botao { margin-top: auto; align-self: flex-start; }
+  .acesso .cartao p { margin-bottom: 22px; }
+  .acesso .etiqueta { color: var(--dlg-verde); margin-bottom: 8px; }
+
+  .simulacao {
+    margin-top: 20px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    padding: 18px 22px;
+    border-radius: var(--dlg-raio-medio);
+    background: var(--dlg-dourado-suave);
+    font-size: .9375rem;
+  }
+  .simulacao .pilula { background: var(--dlg-branco); }
+
+  /* ── Problema ──────────────────────────────────────────────────────── */
+
+  .numeros {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    border-top: 1px solid var(--dlg-linha);
+  }
+  .numero { padding: 28px 24px 8px 0; }
+  .numero + .numero { padding-left: 24px; border-left: 1px solid var(--dlg-linha); }
+  .numero strong {
+    display: block;
+    font-size: clamp(2rem, 3.6vw, 2.75rem);
+    line-height: 1.05;
+    letter-spacing: -0.05em;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+  }
+  .numero span { display: block; margin-top: 8px; color: #4a5566; font-size: .9375rem; }
+
+  .fonte { margin-top: 28px; font-size: .8125rem; color: var(--dlg-cinza); }
+  .secao--branca .fonte { color: var(--dlg-cinza); }
+
+  .destaque-texto {
+    margin-top: 40px;
+    max-width: 46rem;
+    font-size: 1.1875rem;
+  }
+
+  /* ── Novidade (secção escura) ──────────────────────────────────────── */
+
+  .novidade {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0;
+    border-top: 1px solid rgba(255, 254, 250, .14);
+  }
+  .novidade article { padding: 32px 32px 32px 0; border-bottom: 1px solid rgba(255, 254, 250, .14); }
+  .novidade article:nth-child(even) { padding-left: 32px; padding-right: 0; border-left: 1px solid rgba(255, 254, 250, .14); }
+  .novidade h3 { font-size: 1.375rem; letter-spacing: -0.03em; font-weight: 700; color: var(--dlg-marca-verde); }
+  .novidade p { margin-top: 10px; color: var(--dlg-bastidores-texto); max-width: 32em; }
+
+  /* ── Construído ────────────────────────────────────────────────────── */
+
+  .lista-feito { list-style: none; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 40px; }
+  .lista-feito li { position: relative; padding-left: 32px; }
+  .lista-feito li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 3px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--dlg-verde-suave) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M6 10.5l2.6 2.6L14.5 7' fill='none' stroke='%231a7040' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 20px no-repeat;
+  }
+  .lista-feito strong { font-weight: 700; }
+
+  /* ── Impacto ───────────────────────────────────────────────────────── */
+
+  .estimativa {
+    margin-top: 20px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+    gap: 40px;
+    align-items: start;
+    background: var(--dlg-branco);
+    border: 1px solid var(--dlg-linha);
+    border-radius: var(--dlg-raio-palco);
+    padding: clamp(24px, 4vw, 44px);
+  }
+  .estimativa__valor strong {
+    display: block;
+    margin-top: 14px;
+    font-size: clamp(2.4rem, 5vw, 3.5rem);
+    line-height: 1;
+    letter-spacing: -0.05em;
+    font-weight: 800;
+    color: var(--dlg-verde);
+  }
+  .estimativa__valor span { display: block; margin-top: 10px; font-size: 1.0625rem; font-weight: 600; }
+  .estimativa ul { list-style: none; display: grid; gap: 14px; }
+  .estimativa li { padding-left: 18px; border-left: 3px solid var(--dlg-linha); }
+  .estimativa .fonte { margin-top: 18px; }
+
+  /* ── Continuidade ──────────────────────────────────────────────────── */
+
+  .passos { counter-reset: passo; }
+  .passos .cartao { position: relative; }
+  .passos .cartao h3::before {
+    counter-increment: passo;
+    content: counter(passo, decimal-leading-zero);
+    display: block;
+    margin-bottom: 10px;
+    font-size: .8125rem;
+    letter-spacing: .12em;
+    color: var(--dlg-verde);
+  }
+
+  /* ── Equipa ────────────────────────────────────────────────────────── */
+
+  .equipa { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+  .pessoa {
+    display: flex;
+    flex-direction: column;
+    background: var(--dlg-palco);
+    border-radius: var(--dlg-raio-palco);
+    overflow: hidden;
+  }
+  .pessoa img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; object-position: center 30%; background: var(--dlg-linha); }
+  .pessoa__corpo { padding: 26px 26px 30px; display: flex; flex-direction: column; gap: 12px; }
+  .pessoa h3 { font-size: 1.5rem; letter-spacing: -0.035em; font-weight: 800; line-height: 1.15; }
+  .pessoa .etiqueta { color: var(--dlg-verde); }
+  .pessoa p { color: #3c4656; font-size: .96875rem; }
+  .pessoa ul { list-style: none; display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+  .pessoa li {
+    padding: 4px 10px;
+    border-radius: var(--dlg-raio-pilula);
+    background: var(--dlg-branco);
+    font-size: .8125rem;
+    font-weight: 600;
+  }
+
+  .equipa__juntos {
+    margin-top: 20px;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+    padding: 28px;
+    border-radius: var(--dlg-raio-grande);
+    border: 1px solid var(--dlg-linha);
+  }
+  .equipa__juntos h3 { font-size: 1.0625rem; font-weight: 700; letter-spacing: -0.02em; }
+  .equipa__juntos p { margin-top: 6px; color: #4a5566; font-size: .9375rem; }
+
+  /* ── Rodapé ────────────────────────────────────────────────────────── */
+
+  footer { background: var(--dlg-bastidores); color: var(--dlg-bastidores-texto); padding-block: 64px 40px; font-size: .9375rem; }
+  .rodape { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 1fr); gap: 40px; }
+  .rodape img { height: 34px; width: auto; margin-bottom: 18px; }
+  .rodape h2 { color: var(--dlg-branco); font-size: .75rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; margin-bottom: 14px; }
+  .rodape ul { list-style: none; display: grid; gap: 8px; }
+  .rodape a { color: var(--dlg-branco); text-underline-offset: 3px; }
+  .rodape__fim {
+    margin-top: 48px;
+    padding-top: 24px;
+    border-top: 1px solid rgba(255, 254, 250, .14);
+    font-size: .8125rem;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  /* ── Responsivo ────────────────────────────────────────────────────── */
+
+  @media (max-width: 980px) {
+    .grelha--3, .equipa, .equipa__juntos { grid-template-columns: minmax(0, 1fr); }
+    .equipa { max-width: 560px; }
+    .experimentar { grid-template-columns: minmax(0, 1fr); }
+    .numeros { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .numero:nth-child(3) { padding-left: 0; border-left: 0; }
+    .estimativa, .rodape { grid-template-columns: minmax(0, 1fr); }
+  }
+
+  @media (max-width: 760px) {
+    .hero { min-height: 0; }
+    .hero__imagem {
       position: relative;
+      order: 3;
+      height: auto;
+      aspect-ratio: 4 / 3;
+      object-position: 92% center;
     }
-    .quadro-consola {
-      width: 100%;
-      height: 100%;
-      border: none;
-      display: none;
-    }
-    .quadro-consola.ativo {
-      display: block;
-    }
-    #vista-dupla {
-      width: 100%;
-      height: 100%;
-      display: none;
-      grid-template-columns: 1fr 1fr;
-      divide-x: 1px solid var(--painel-borda);
-      background: var(--fundo);
-    }
-    #vista-dupla.ativo {
-      display: grid;
-    }
-    .coluna-dupla {
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      border-right: 1px solid var(--painel-borda);
-    }
-    .coluna-dupla:last-child {
-      border-right: none;
-    }
-    .cabecalho-coluna {
-      height: 34px;
-      background: rgba(22, 36, 58, 0.9);
-      border-bottom: 1px solid var(--painel-borda);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 14px;
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 0.02em;
-    }
-    .cabecalho-coluna a {
-      color: var(--destaque-verde);
-      text-decoration: none;
-      font-size: 11px;
-    }
-    .cabecalho-coluna a:hover {
-      text-decoration: underline;
-    }
-    .coluna-dupla iframe {
-      flex: 1;
-      width: 100%;
-      height: 100%;
-      border: none;
-    }
-    @media (max-width: 960px) {
-      #vista-dupla {
-        grid-template-columns: 1fr;
-        grid-template-rows: 1fr 1fr;
-      }
-      .coluna-dupla {
-        border-right: none;
-        border-bottom: 1px solid var(--painel-borda);
-      }
-      .tag-evento {
-        display: none;
-      }
-    }
-  </style>
+    .hero::before { display: none; }
+    .hero__nav { display: none; }
+    .hero__logo { height: 36px; }
+    .hero__corpo { padding-block: 8px 40px; }
+    .hero__acoes .botao { flex: 1 1 100%; }
+
+    .grelha--2, .lista-feito, .novidade { grid-template-columns: minmax(0, 1fr); }
+    .novidade article, .novidade article:nth-child(even) { padding: 26px 0; border-left: 0; }
+
+    .telegram { grid-template-columns: minmax(0, 1fr); justify-items: start; }
+    .telegram__qr { width: 200px; }
+    .simulacao { flex-direction: column; gap: 10px; }
+  }
+
+  @media (max-width: 480px) {
+    .numeros { grid-template-columns: minmax(0, 1fr); }
+    .numero, .numero + .numero { padding-left: 0; border-left: 0; border-bottom: 1px solid var(--dlg-linha); padding-bottom: 20px; }
+  }
+</style>
 </head>
 <body>
 
-  <header id="topo">
-    <div class="marca-box">
-      <img src="design-system/logo/delegate-logo-horizontal-escuro.svg" alt="Delegate">
-      <span class="tag-evento">Hack4Guimarães 2035</span>
-    </div>
+<header class="hero">
+  <img class="hero__imagem" src="/assets/henriques-header.jpg" width="1406" height="768"
+       alt="O Henriques, o representante digital do Delegate, à porta de uma muralha com a inscrição «Guimarães»."
+       fetchpriority="high">
 
-    <nav class="alternador" aria-label="Navegação entre consolas">
-      <button id="btn-painel" class="botao-aba ativo" onclick="mudarVista('painel')">
-        📱 Painel ao Vivo
-      </button>
-      <button id="btn-consola" class="botao-aba" onclick="mudarVista('consola')">
-        🏛️ Consola da Câmara
-      </button>
-      <button id="btn-duplo" class="botao-aba" onclick="mudarVista('duplo')">
-        ⚡ Modo Duplo (Lado a Lado)
-      </button>
+  <div class="contentor hero__topo">
+    <img class="hero__logo" src="/assets/delegate-logo-horizontal-escuro.svg" alt="Delegate" width="202" height="44">
+    <nav class="hero__nav" aria-label="Secções">
+      <a href="#experimentar">Experimentar</a>
+      <a href="#solucao">Solução</a>
+      <a href="#impacto">Impacto</a>
+      <a href="#equipa">Equipa</a>
     </nav>
+  </div>
 
-    <div class="acoes-direita">
-      <a id="link-abrir-nova-aba" class="link-acao" href="/painel" target="_blank" rel="noopener">
-        Abrir em Ecrã Cheio ↗
-      </a>
+  <div class="contentor hero__corpo">
+    <div class="hero__texto">
+      <p class="etiqueta hero__evento">Hack4Guimarães 2035 · Desafio 3.4</p>
+      <h1>Diga o que precisa. <span>O Henriques trata do resto.</span></h1>
+      <p class="hero__lead">
+        Um <strong>representante digital</strong> para cada munícipe e cada empresa de Guimarães.
+        Responde com a fonte oficial à vista e trata dos pedidos à Câmara, sempre com a sua autorização.
+      </p>
+      <div class="hero__acoes">
+        <a class="botao botao--principal" href="https://t.me/afonso_cm_bot" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4 20-7Z"/></svg>
+          Falar com o Henriques
+        </a>
+        <a class="botao botao--contorno" href="#experimentar">Ver a demonstração</a>
+      </div>
     </div>
-  </header>
+  </div>
+</header>
 
-  <main id="palco">
-    <iframe id="iframe-painel" class="quadro-consola ativo" src="/painel" title="Painel ao Vivo"></iframe>
-    <iframe id="iframe-consola" class="quadro-consola" src="/consola" title="Consola Municipal da Câmara"></iframe>
+<main>
 
-    <div id="vista-dupla">
-      <section class="coluna-dupla">
-        <header class="cabecalho-coluna">
-          <span>📱 Cidadão & Orquestração (Henriques · TypeSafe Jev · Cofre)</span>
-          <a href="/painel" target="_blank" rel="noopener">Ecrã inteiro ↗</a>
-        </header>
-        <iframe src="/painel" title="Painel ao Vivo Lado Esquerdo"></iframe>
-      </section>
+  <!-- Experimentar -->
+  <section id="experimentar">
+    <div class="contentor">
+      <div class="cabecalho">
+        <p class="etiqueta">Experimentar</p>
+        <h2>O protótipo está a funcionar. Pode experimentá-lo agora.</h2>
+        <p>Fale com o Henriques no telemóvel e veja, ao mesmo tempo, o que acontece nos bastidores e o que chega à Câmara.</p>
+      </div>
 
-      <section class="coluna-dupla">
-        <header class="cabecalho-coluna">
-          <span>🏛️ Consola Municipal (Serviços Urbanos · Decisão da Câmara)</span>
-          <a href="/consola" target="_blank" rel="noopener">Ecrã inteiro ↗</a>
-        </header>
-        <iframe src="/consola" title="Consola Municipal Lado Direito"></iframe>
-      </section>
+      <div class="experimentar">
+        <article class="telegram">
+          <div class="telegram__qr">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 25 25" shape-rendering="crispEdges" role="img" aria-label="QR code para abrir o Henriques no Telegram (t.me/afonso_cm_bot)"><path stroke="#1d2430" d="M0 0.5h7m1 0h1m1 0h4m4 0h7M0 1.5h1m5 0h1m1 0h1m5 0h1m3 0h1m5 0h1M0 2.5h1m1 0h3m1 0h1m1 0h3m2 0h2m3 0h1m1 0h3m1 0h1M0 3.5h1m1 0h3m1 0h1m2 0h5m1 0h2m1 0h1m1 0h3m1 0h1M0 4.5h1m1 0h3m1 0h1m1 0h1m2 0h1m1 0h2m1 0h1m1 0h1m1 0h3m1 0h1M0 5.5h1m5 0h1m3 0h1m1 0h3m3 0h1m5 0h1M0 6.5h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7M9 7.5h3m1 0h1m1 0h2M0 8.5h1m2 0h8m2 0h2m1 0h2m2 0h1m1 0h3M0 9.5h1m2 0h1m1 0h1m2 0h2m1 0h1m1 0h1m1 0h1m4 0h4M0 10.5h3m1 0h1m1 0h2m1 0h1m1 0h3m1 0h1m4 0h2m2 0h1M0 11.5h3m1 0h1m3 0h1m3 0h1m1 0h2m1 0h1m1 0h1m1 0h4M1 12.5h2m1 0h6m1 0h2m2 0h2m1 0h1m5 0h1M0 13.5h1m1 0h1m1 0h2m2 0h1m1 0h1m1 0h5m3 0h1m2 0h1M0 14.5h2m4 0h1m2 0h2m1 0h1m2 0h1m1 0h1m2 0h5M0 15.5h1m1 0h1m1 0h2m1 0h4m5 0h4m1 0h2m1 0h1M0 16.5h1m2 0h1m2 0h1m1 0h1m2 0h1m1 0h1m1 0h6m1 0h2M8 17.5h2m3 0h1m2 0h1m3 0h1m1 0h2M0 18.5h7m1 0h1m1 0h2m1 0h1m2 0h1m1 0h1m1 0h1m3 0h1M0 19.5h1m5 0h1m1 0h1m1 0h2m1 0h1m1 0h2m3 0h1M0 20.5h1m1 0h3m1 0h1m1 0h1m1 0h11M0 21.5h1m1 0h3m1 0h1m1 0h2m1 0h1m1 0h1m1 0h1m1 0h2m4 0h2M0 22.5h1m1 0h3m1 0h1m2 0h1m1 0h3m2 0h2m2 0h5M0 23.5h1m5 0h1m2 0h1m2 0h1m1 0h1m3 0h3m1 0h3M0 24.5h7m1 0h1m1 0h3m2 0h2m1 0h1m2 0h1m2 0h1"/></svg>
+          </div>
+          <div>
+            <p class="etiqueta">Telegram · ao vivo</p>
+            <h3>Fale com o Henriques</h3>
+            <p>Aponte a câmara do telemóvel ao código. Pergunte, por exemplo, o que é preciso para abrir uma esplanada.</p>
+            <a class="botao botao--principal" href="https://t.me/afonso_cm_bot" target="_blank" rel="noopener">Abrir no Telegram</a>
+            <p class="telegram__nota">O bot chama-se <strong>@afonso_cm_bot</strong> por razões técnicas. Quem responde é o Henriques.</p>
+          </div>
+        </article>
+
+        <div class="acesso">
+          <article class="cartao">
+            <p class="etiqueta">Bastidores</p>
+            <h3>Painel do Delegate</h3>
+            <p>A conversa em tempo real, a árvore de decisão, o Cofre Digital Pessoal e cada chamada à Porta Agêntica Municipal, tal como acontecem.</p>
+            <a class="botao botao--escuro" href="/painel" target="_blank" rel="noopener">Abrir o Painel</a>
+          </article>
+          <article class="cartao">
+            <p class="etiqueta">Lado da Câmara</p>
+            <h3>Consola da Câmara</h3>
+            <p>O que os técnicos municipais recebem: casos já preparados, com fontes e dados verificados, prontos para decisão.</p>
+            <a class="botao botao--verde" href="/consola" target="_blank" rel="noopener">Abrir a Consola</a>
+          </article>
+        </div>
+      </div>
+
+      <p class="simulacao">
+        <span class="pilula pilula--simulacao">Simulação</span>
+        <span>A autenticação com Chave Móvel Digital, os sistemas internos da Câmara e o número de processo são simulados e estão assinalados na interface. O protótipo não usa dados pessoais reais.</span>
+      </p>
     </div>
-  </main>
+  </section>
 
-  <script>
-    // Num alojamento externo (Vercel), o núcleo continua na máquina da demo:
-    // abre o portal com ?nucleo=http://<ip-do-portátil>:4000 e os dois ecrãs
-    // passam a falar com ele. Sem o parâmetro, vale a mesma origem (localhost).
-    const PARAMETROS_PORTAL = new URLSearchParams(location.search);
-    const NUCLEO_PORTAL = (PARAMETROS_PORTAL.get('nucleo') || '').replace(/\/$/, '');
-    const SUFIXO_NUCLEO = NUCLEO_PORTAL ? `?nucleo=${encodeURIComponent(NUCLEO_PORTAL)}` : '';
-    const rota = (caminho) => caminho + SUFIXO_NUCLEO;
+  <!-- Problema -->
+  <section class="secao--branca" id="problema">
+    <div class="contentor">
+      <div class="cabecalho">
+        <p class="etiqueta">O problema</p>
+        <h2>A informação existe. Encontrá-la é que dá trabalho.</h2>
+        <p>Para tratar de um assunto com a Câmara, o munícipe tem de descobrir sozinho que procedimento se aplica, que documentos entregar, em que canal e a que custo. A informação está repartida pelo portal, pelo diretório de serviços, por formulários, regulamentos e tabelas de taxas, e está escrita em linguagem técnica.</p>
+      </div>
 
-    function mudarVista(vista) {
-      document.getElementById('btn-painel').classList.remove('ativo');
-      document.getElementById('btn-consola').classList.remove('ativo');
-      document.getElementById('btn-duplo').classList.remove('ativo');
+      <div class="numeros">
+        <div class="numero"><strong>22.425</strong><span>atendimentos presenciais no Balcão Único, de 20 a 28 minutos cada</span></div>
+        <div class="numero"><strong>41.473</strong><span>chamadas atendidas</span></div>
+        <div class="numero"><strong>28.308</strong><span>registos de correspondência, 88,7% por email</span></div>
+        <div class="numero"><strong>7.141</strong><span>processos registados no Urbanismo Digital</span></div>
+      </div>
+      <p class="fonte">Fonte: relatórios de atividades da Câmara Municipal de Guimarães, fevereiro a novembro de 2025. Não há dados públicos sobre a parte destes contactos que é apenas informativa; medi-la é um dos objetivos do piloto.</p>
 
-      document.getElementById('iframe-painel').classList.remove('ativo');
-      document.getElementById('iframe-consola').classList.remove('ativo');
-      document.getElementById('vista-dupla').classList.remove('ativo');
+      <p class="destaque-texto">O Município já tem um atendedor virtual com IA, e o Delegate não o substitui. Acrescenta o que um assistente de perguntas e respostas não faz sozinho: <strong>responde com a fonte à vista, encaminha para o procedimento certo, acompanha o pedido ao longo do tempo e age em nome da pessoa quando ela o autoriza.</strong></p>
+    </div>
+  </section>
 
-      const btnLink = document.getElementById('link-abrir-nova-aba');
+  <!-- Solução -->
+  <section id="solucao">
+    <div class="contentor">
+      <div class="cabecalho">
+        <p class="etiqueta">A solução</p>
+        <h2>Um representante do lado do munícipe. Casos preparados do lado da Câmara.</h2>
+      </div>
 
-      if (vista === 'consola') {
-        document.getElementById('btn-consola').classList.add('ativo');
-        document.getElementById('iframe-consola').classList.add('ativo');
-        btnLink.href = rota('/consola');
-        window.location.hash = 'consola';
-      } else if (vista === 'duplo') {
-        document.getElementById('btn-duplo').classList.add('ativo');
-        document.getElementById('vista-dupla').classList.add('ativo');
-        btnLink.href = rota('/painel');
-        window.location.hash = 'duplo';
-      } else {
-        document.getElementById('btn-painel').classList.add('ativo');
-        document.getElementById('iframe-painel').classList.add('ativo');
-        btnLink.href = rota('/painel');
-        window.location.hash = 'painel';
-      }
-    }
+      <div class="grelha grelha--3">
+        <article class="cartao">
+          <h3>Henriques, o representante digital</h3>
+          <p>Recebe pedidos em linguagem natural, identifica o procedimento e responde em linguagem simples, citando documento, artigo e data de consulta. Sem fonte válida, não responde e encaminha.</p>
+        </article>
+        <article class="cartao">
+          <h3>Mandato digital</h3>
+          <p>A autorização que a pessoa dá ao Henriques, em níveis que vão de informar (D0) a agir dentro de regras definidas (D4). Revogável a qualquer momento. Sem mandato, nenhuma ação é executada.</p>
+        </article>
+        <article class="cartao">
+          <h3>Missão</h3>
+          <p>Cada pedido passa a ser um processo acompanhado, com objetivo, passos, documentos, prazos e estado.</p>
+        </article>
+        <article class="cartao">
+          <h3>Cofre Digital Pessoal</h3>
+          <p>Dados e documentos cifrados e sob controlo da pessoa. Em cada pedido, a Câmara recebe apenas o estritamente necessário.</p>
+        </article>
+        <article class="cartao">
+          <h3>Porta Agêntica Municipal</h3>
+          <p>Um contrato aberto que define como agentes autorizados tratam serviços municipais, com as mesmas regras, mandato e registo de auditoria para todos.</p>
+        </article>
+        <article class="cartao">
+          <h3>Consola Municipal</h3>
+          <p>Os técnicos recebem os casos já preparados, com fontes e dados verificados, e concentram-se na decisão.</p>
+        </article>
+      </div>
+    </div>
+  </section>
 
-    window.addEventListener('DOMContentLoaded', () => {
-      if (SUFIXO_NUCLEO) {
-        document.querySelectorAll('iframe[src="/painel"], iframe[src="/consola"]').forEach((quadro) => {
-          quadro.src = rota(quadro.getAttribute('src'));
-        });
-        document.querySelectorAll('a[href="/painel"], a[href="/consola"]').forEach((ligacao) => {
-          ligacao.href = rota(ligacao.getAttribute('href'));
-        });
-      }
-      const hash = window.location.hash.replace('#', '');
-      if (hash === 'consola' || hash === 'duplo' || hash === 'painel') {
-        mudarVista(hash);
-      }
-    });
+  <!-- O que traz de novo -->
+  <section class="secao--escura" id="novidade">
+    <div class="contentor">
+      <div class="cabecalho">
+        <p class="etiqueta">O que traz de novo</p>
+        <h2>Não é mais um canal de informação da Câmara.</h2>
+      </div>
 
-    window.addEventListener('keydown', (e) => {
-      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-      if (e.key === '1') mudarVista('painel');
-      if (e.key === '2') mudarVista('consola');
-      if (e.key === '3') mudarVista('duplo');
-    });
-  </script>
+      <div class="novidade">
+        <article>
+          <h3>Representa a pessoa</h3>
+          <p>Guarda o contexto que a pessoa autoriza, acompanha os pedidos e age com mandato.</p>
+        </article>
+        <article>
+          <h3>Decide por escolhas fechadas</h3>
+          <p>Cada mensagem passa por escolhas definidas em código: que serviço se aplica, se responde, se abstém, encaminha ou recusa, e que mandato é necessário. Um verificador bloqueia qualquer número que não conste da fonte oficial.</p>
+        </article>
+        <article>
+          <h3>Inverte a integração</h3>
+          <p>A Câmara não abre os seus sistemas internos. Implementa um contrato público, serviço a serviço, de I0 (orientação, sem integração) a I3 (ação de ponta a ponta). Um fornecedor que o implemente pode servir vários municípios.</p>
+        </article>
+        <article>
+          <h3>Pode ser auditado</h3>
+          <p>Cada passo gera um evento selado (SHA-256), que mostra o que o representante fez e com que fundamento.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Construído -->
+  <section class="secao--branca" id="construido">
+    <div class="contentor">
+      <div class="cabecalho">
+        <p class="etiqueta">O que está construído</p>
+        <h2>Construído de raiz durante o hackathon, de 19 a 23 de outubro de 2026.</h2>
+      </div>
+
+      <ul class="lista-feito">
+        <li>O <strong>Henriques no Telegram</strong>, com respostas geradas em tempo real.</li>
+        <li><strong>Base de conhecimento com 224 documentos públicos</strong> do Município, consultados a 19/10/2026, cada um com endereço de origem e impressão digital SHA-256.</li>
+        <li><strong>Registo Canónico com 16 fichas</strong> de serviços municipais, curadas a partir de fontes oficiais.</li>
+        <li><strong>Fluxo completo da comunicação prévia de esplanada</strong>: pergunta, resposta com fonte, mandato, Cofre, autenticação e processo criado na Câmara.</li>
+        <li><strong>Porta Agêntica com sete operações</strong>, de procurar serviços a obter uma referência de pagamento.</li>
+        <li><strong>Cofre Digital Pessoal</strong> cifrado com AES-256-GCM e <strong>mandatos por níveis</strong>.</li>
+        <li><strong>Consola Municipal</strong> e <strong>painel de observação</strong> em tempo real.</li>
+        <li><strong>Testes automatizados</strong> do registo, da Porta, do motor de decisão, da base de conhecimento e dos fluxos.</li>
+        <li><strong>Conjunto de avaliação com 42 perguntas</strong> em cinco categorias, incluindo perguntas sem fonte e tentativas de manipulação. Escritas pela equipa, não são medida de precisão: essa mede-se no piloto.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Impacto -->
+  <section id="impacto">
+    <div class="contentor">
+      <div class="cabecalho">
+        <p class="etiqueta">Impacto</p>
+        <h2>Menos voltas para quem pede. Mais tempo para quem decide.</h2>
+      </div>
+
+      <div class="grelha grelha--2">
+        <article class="cartao">
+          <h3>Munícipes</h3>
+          <p>Menos deslocações, chamadas e repetição de informação, com acompanhamento do pedido do princípio ao fim.</p>
+        </article>
+        <article class="cartao">
+          <h3>Empresas</h3>
+          <p>Menos tempo e menos custo para perceber o caminho até abrir, licenciar ou construir.</p>
+        </article>
+        <article class="cartao">
+          <h3>Câmara</h3>
+          <p>Pedidos mais completos à primeira, técnicos concentrados na decisão e dados concretos sobre onde o serviço tem fricção.</p>
+        </article>
+        <article class="cartao">
+          <h3>Cidade</h3>
+          <p>Um serviço público pioneiro, alinhado com a candidatura de Guimarães a Cidade Europeia da Inovação.</p>
+        </article>
+      </div>
+
+      <div class="estimativa">
+        <div class="estimativa__valor">
+          <span class="pilula pilula--hipotese">Hipótese a medir no piloto</span>
+          <strong>3.223 a 3.812 h</strong>
+          <span>de trabalho libertadas em 10 meses, o equivalente a 2,4 a 2,9 pessoas a tempo inteiro.</span>
+        </div>
+        <div>
+          <ul>
+            <li>Se o Henriques resolver <strong>um em cada cinco</strong> atendimentos presenciais, chamadas e emails, a Câmara liberta entre 2.756 e 3.345 horas.</li>
+            <li>Se 30% dos processos de urbanismo e de serviços urbanos chegarem como casos preparados, poupando 10 minutos cada, somam-se cerca de 467 horas.</li>
+            <li>Numa comunicação prévia de esplanada, o trabalho da Câmara passa de cerca de 69 para 27 minutos. Para o munícipe, de cerca de 2 h 50 min para 15 minutos.</li>
+          </ul>
+          <p class="fonte">Modelo de custeio por atividades. Volumes: relatórios de atividades da Câmara (fevereiro a novembro de 2025). A parte resolvida pelo representante, os 4 min por chamada, os 8 min por email e o tempo poupado na instrução são hipóteses. É capacidade libertada para instruir, decidir e apoiar quem precisa, não redução de pessoal.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Continuidade -->
+  <section class="secao--branca" id="continuidade">
+    <div class="contentor">
+      <div class="cabecalho">
+        <p class="etiqueta">Continuidade</p>
+        <h2>Começa sem integração. Cresce ao ritmo da Câmara.</h2>
+      </div>
+
+      <div class="grelha grelha--3 passos">
+        <article class="cartao">
+          <h3>Implantação gradual</h3>
+          <p>Arranca no nível I0, orientação com fonte, e sobe serviço a serviço até à ação de ponta a ponta (I3).</p>
+        </article>
+        <article class="cartao">
+          <h3>Piloto de cinco meses</h3>
+          <p>Com a Câmara Municipal e as Juntas de Freguesia, para medir o que hoje é hipótese: contactos informativos, tempos por tarefa, pedidos incompletos e tempo de instrução.</p>
+        </article>
+        <article class="cartao">
+          <h3>Replicação</h3>
+          <p>Muitos procedimentos decorrem de lei nacional e são iguais nos 308 municípios. Só muda a parte municipal. O passo seguinte é a Comunidade Intermunicipal do Ave.</p>
+        </article>
+        <article class="cartao">
+          <h3>Modelo de negócio</h3>
+          <p>O munícipe nunca paga. A Câmara paga uma subscrição abaixo da poupança medida no piloto. Agentes de terceiros pagam pela utilização da Porta.</p>
+        </article>
+        <article class="cartao">
+          <h3>Código aberto</h3>
+          <p>Publicado sob licença EUPL-1.2, para que qualquer município o possa reutilizar sem depender de um fornecedor.</p>
+        </article>
+        <article class="cartao">
+          <h3>Próximos passos</h3>
+          <p>Canal WhatsApp, autenticação real com Chave Móvel Digital, avisos proativos a partir do Cofre e uma visão agregada e anónima do que a cidade pretende fazer.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Equipa -->
+  <section id="equipa">
+    <div class="contentor">
+      <div class="cabecalho">
+        <p class="etiqueta">Equipa</p>
+        <h2>Três percursos diferentes, um mesmo problema.</h2>
+        <p>Engenharia de agentes e segurança, gestão de empresas e produto, administração e ligação à cidade. O Delegate precisava das três coisas: um agente em que se possa confiar, um serviço que se sustente e uma proposta que faça sentido para quem vive em Guimarães.</p>
+      </div>
+
+      <div class="equipa">
+        <article class="pessoa">
+          <img src="/assets/equipa/paulo.jpg" alt="Paulo Ribeiro" width="455" height="455" loading="lazy">
+          <div class="pessoa__corpo">
+            <p class="etiqueta">IA e segurança</p>
+            <h3>Paulo Ribeiro</h3>
+            <p>Engenheiro de software que passou a analista de segurança da informação e investigador, natural de Guimarães. Tem construído pipelines de dados, quadros de avaliação e ferramentas inteligentes onde se cruzam a inteligência artificial, a segurança e a conformidade regulamentar. Está a fazer o doutoramento sobre o uso de LLM para automatizar a engenharia de segurança e de conformidade. O que hoje mais o motiva é desenhar, orquestrar e pôr à prova sistemas multiagente perante problemas reais.</p>
+            <ul aria-label="Áreas">
+              <li>Sistemas multiagente</li>
+              <li>Cibersegurança</li>
+              <li>Doutoramento em curso</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="pessoa">
+          <img src="/assets/equipa/matheus.jpg" alt="Matheus Haddad" width="455" height="455" loading="lazy">
+          <div class="pessoa__corpo">
+            <p class="etiqueta">Gestão e produto</p>
+            <h3>Matheus Haddad</h3>
+            <p>Empresário e cofundador de empresas de tecnologia, consultoria e educação. Começou pela Webgoal, uma das primeiras empresas de desenvolvimento ágil de software no Brasil e hoje uma holding; seguiram-se o Granatum, o Ateliê de Software, a Orgganica e a Escola Lumiar Poços de Caldas. Licenciado em Ciência da Computação, mestre em Inteligência Artificial e com MBA em Gestão Empresarial, gere empresas desde 2008 com uma aposta: organizações transparentes, autónomas e centradas nas pessoas dão melhores resultados.</p>
+            <ul aria-label="Áreas">
+              <li>Agilidade</li>
+              <li>Gestão de empresas</li>
+              <li>Mestre em IA</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="pessoa">
+          <img src="/assets/equipa/daiana.jpg" alt="Daiana Haddad" width="455" height="455" loading="lazy">
+          <div class="pessoa__corpo">
+            <p class="etiqueta">Administração e cidade</p>
+            <h3>Daiana Haddad</h3>
+            <p>Empreendedora, licenciada em Ciência da Computação pela Unifenas, com especialização em Design Gráfico 3D. Junta a formação técnica a um olhar visual e à experiência de gestão: tem apoiado a administração das empresas do grupo Webgoal, um trabalho que pede visão de conjunto sem perder o detalhe. Em Guimarães, desenvolve projetos culturais no âmbito da Capital Verde Europeia, em contacto direto com as instituições e as pessoas da cidade. É essa ligação ao terreno que traz à equipa.</p>
+            <ul aria-label="Áreas">
+              <li>Administração</li>
+              <li>Design gráfico 3D</li>
+              <li>Projetos culturais</li>
+            </ul>
+          </div>
+        </article>
+      </div>
+
+      <div class="equipa__juntos">
+        <div>
+          <h3>Um agente fiável</h3>
+          <p>Decisões por escolhas fechadas, abstenção sem fonte e cada passo auditável.</p>
+        </div>
+        <div>
+          <h3>Um serviço sustentável</h3>
+          <p>Modelo de negócio, implantação gradual e um piloto que mede antes de prometer.</p>
+        </div>
+        <div>
+          <h3>Pensado para Guimarães</h3>
+          <p>Feito a partir de quem vive a cidade e dos serviços que os munícipes usam.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="contentor">
+    <div class="rodape">
+      <div>
+        <img src="/assets/delegate-logo-horizontal-escuro.svg" alt="Delegate" width="156" height="34">
+        <p>Um representante digital para cada munícipe tratar dos seus assuntos com a Câmara.</p>
+        <p style="margin-top: 12px;">Hack4Guimarães 2035 · Desafio 3.4 · Falar com a Câmara sem burocracia (Tecnologias Inteligentes).</p>
+      </div>
+      <div>
+        <h2>Demonstração</h2>
+        <ul>
+          <li><a href="https://t.me/afonso_cm_bot" target="_blank" rel="noopener">Henriques no Telegram</a></li>
+          <li><a href="/painel" target="_blank" rel="noopener">Painel do Delegate</a></li>
+          <li><a href="/consola" target="_blank" rel="noopener">Consola da Câmara</a></li>
+          <li><a href="/consolas" target="_blank" rel="noopener">Painel e Consola lado a lado</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Ferramentas de terceiros</h2>
+        <p>OpenRouter (TypeSafe Jev, redação e embeddings), Cloudflare, Telegram Bot API com grammY, Model Context Protocol, Node.js, TypeScript, PostgreSQL, Zod, Vitest e a fonte Manrope (SIL OFL).</p>
+      </div>
+    </div>
+    <div class="rodape__fim">
+      <span>Código aberto sob licença EUPL-1.2.</span>
+      <span>Todo o conteúdo municipal usado é público e vem do portal da Câmara Municipal de Guimarães e da legislação publicada.</span>
+    </div>
+  </div>
+</footer>
+
 </body>
 </html>
