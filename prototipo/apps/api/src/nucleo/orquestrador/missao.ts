@@ -17,6 +17,7 @@
  *   - missao.estado.alterado
  */
 import type { Registo } from '../eventos/registo.js';
+import type { ArmazenamentoEstado } from '../estado.js';
 
 export type EstadoMissao =
   | 'entendido'
@@ -70,10 +71,28 @@ export class OrquestradorMissoes {
   readonly #sessao: string;
   readonly #missoes = new Map<string, Missao>();
   #contador = 1;
+  /** Onde o estado vive quando o núcleo corre fora do processo local. */
+  readonly #armazenamento?: ArmazenamentoEstado;
 
-  constructor(registo: Registo, sessao: string = 'demo') {
+  constructor(registo: Registo, sessao: string = 'demo', armazenamento?: ArmazenamentoEstado) {
     this.#registo = registo;
     this.#sessao = sessao;
+    this.#armazenamento = armazenamento;
+  }
+
+  /** Carrega da base as missões de uma pessoa (modo alojado). */
+  async restaurar(pessoa: string): Promise<void> {
+    if (!this.#armazenamento) return;
+    for (const estado of await this.#armazenamento.listar('missao', pessoa)) {
+      this.#missoes.set(estado.id, estado.dados as Missao);
+      const n = Number(String(estado.id).replace(/\D/g, ''));
+      if (Number.isFinite(n) && n >= this.#contador) this.#contador = n + 1;
+    }
+  }
+
+  async #guardar(missao: Missao): Promise<void> {
+    if (!this.#armazenamento) return;
+    await this.#armazenamento.gravar('missao', missao.pessoa, missao.id, missao);
   }
 
   /**
@@ -125,6 +144,7 @@ export class OrquestradorMissoes {
     };
 
     this.#missoes.set(id, missao);
+    await this.#guardar(missao);
 
     await this.#registo.registar({
       tipo: 'missao.criada',
@@ -178,6 +198,7 @@ export class OrquestradorMissoes {
     missao.estado = para;
     missao.atualizadoEm = agora;
     missao.historicoEstados.push({ estado: para, em: agora, motivo });
+    await this.#guardar(missao);
 
     await this.#registo.registar({
       tipo: 'missao.estado.alterado',
@@ -210,6 +231,9 @@ export class OrquestradorMissoes {
     item.feito = feito;
     if (nota) item.nota = nota;
     missao.atualizadoEm = new Date().toISOString();
+    // A checklist é lida logo a seguir (noutro módulo), por isso a gravação
+    // espera-se: uma escrita destacada perder-se-ia no congelamento da função.
+    void this.#guardar(missao);
     return true;
   }
 

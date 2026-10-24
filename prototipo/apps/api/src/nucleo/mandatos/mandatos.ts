@@ -13,6 +13,7 @@
  *   - D4: Agir dentro de regras predefinidas (indisponível em R0)
  */
 import type { Registo } from '../eventos/registo.js';
+import type { ArmazenamentoEstado } from '../estado.js';
 
 export type NivelMandato = 'D0' | 'D1' | 'D2' | 'D3' | 'D4';
 export type EstadoMandato = 'ativo' | 'revogado' | 'expirado';
@@ -48,10 +49,28 @@ export class GestorMandatos {
   readonly #sessao: string;
   readonly #mandatos = new Map<string, MandatoDigital>();
   #contador = 1;
+  /** Onde o estado vive quando o núcleo corre fora do processo local. */
+  readonly #armazenamento?: ArmazenamentoEstado;
 
-  constructor(registo: Registo, sessao: string = 'demo') {
+  constructor(registo: Registo, sessao: string = 'demo', armazenamento?: ArmazenamentoEstado) {
     this.#registo = registo;
     this.#sessao = sessao;
+    this.#armazenamento = armazenamento;
+  }
+
+  /** Carrega da base os mandatos da pessoa (modo alojado). */
+  async restaurar(mandante: string): Promise<void> {
+    if (!this.#armazenamento) return;
+    for (const estado of await this.#armazenamento.listar('mandato', mandante)) {
+      this.#mandatos.set(estado.id, estado.dados as MandatoDigital);
+      const n = Number(String(estado.id).replace(/\D/g, ''));
+      if (Number.isFinite(n) && n >= this.#contador) this.#contador = n + 1;
+    }
+  }
+
+  async #guardar(mandato: MandatoDigital): Promise<void> {
+    if (!this.#armazenamento) return;
+    await this.#armazenamento.gravar('mandato', mandato.mandante, mandato.id, mandato);
   }
 
   /**
@@ -118,6 +137,7 @@ export class GestorMandatos {
     };
 
     this.#mandatos.set(id, mandato);
+    await this.#guardar(mandato);
 
     await this.#registo.registar({
       tipo: 'mandato.concedido',
@@ -173,6 +193,7 @@ export class GestorMandatos {
 
     mandato.estado = 'revogado';
     mandato.revogadoEm = new Date().toISOString();
+    await this.#guardar(mandato);
 
     await this.#registo.registar({
       tipo: 'mandato.revogado',

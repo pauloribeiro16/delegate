@@ -11,6 +11,7 @@ import type { CofreDigital } from '../cofre/cofre.js';
 import type { GestorMandatos } from '../mandatos/mandatos.js';
 import type { OrquestradorMissoes } from './missao.js';
 import type { Registo } from '../eventos/registo.js';
+import type { ArmazenamentoEstado } from '../estado.js';
 import type { CanalGrammy, Botao } from '../canal.js';
 
 import type { RedatorOpenRouter } from '../henriques/redator-openrouter.js';
@@ -109,6 +110,8 @@ export class GestorFluxoD2 {
   readonly #sessao: string;
   readonly #redator?: RedatorOpenRouter;
   readonly #rascunhos = new Map<string, RascunhoEsplanada>();
+  /** Onde o rascunho vive quando o núcleo corre fora do processo local. */
+  readonly #armazenamento?: ArmazenamentoEstado;
 
   constructor(deps: {
     cofre: CofreDigital;
@@ -118,6 +121,7 @@ export class GestorFluxoD2 {
     canal: CanalGrammy;
     sessao?: string;
     redator?: RedatorOpenRouter;
+    armazenamento?: ArmazenamentoEstado;
   }) {
     this.#cofre = deps.cofre;
     this.#mandatos = deps.mandatos;
@@ -126,6 +130,26 @@ export class GestorFluxoD2 {
     this.#canal = deps.canal;
     this.#sessao = deps.sessao ?? 'demo';
     this.#redator = deps.redator;
+    this.#armazenamento = deps.armazenamento;
+  }
+
+  /**
+   * Carrega da base o rascunho em curso da pessoa. Sem isto, cada função do
+   * alojamento esqueceria o passo em que a pessoa estava.
+   */
+  async restaurar(pessoa: string): Promise<void> {
+    if (!this.#armazenamento) return;
+    for (const estado of await this.#armazenamento.listar('rascunho', pessoa)) {
+      this.#rascunhos.set(pessoa, estado.dados as RascunhoEsplanada);
+    }
+  }
+
+  /** Grava o rascunho da pessoa (chamado depois de cada passo do fluxo). */
+  async persistir(pessoa: string): Promise<void> {
+    if (!this.#armazenamento) return;
+    const rascunho = this.#rascunhos.get(pessoa);
+    if (!rascunho) return;
+    await this.#armazenamento.gravar('rascunho', pessoa, pessoa, rascunho);
   }
 
   obterRascunhoAtivo(pessoa: string): RascunhoEsplanada | undefined {

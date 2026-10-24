@@ -10,6 +10,7 @@
  *    é partilhado do que NÃO é partilhado (nao_partilha).
  */
 import type { Registo } from '../eventos/registo.js';
+import type { ArmazenamentoEstado } from '../estado.js';
 import { cifrarDados, decifrarDados, derivarChavePessoa, type ConteudoCifrado } from './cifra.js';
 import type { ServicoChavesCofre } from './servico-chaves.js';
 
@@ -53,11 +54,47 @@ export class CofreDigital {
   readonly #pacotes = new Map<string, PacoteMinimo>(); // id -> pacote
   #contadorItem = 1;
   #contadorPacote = 1;
+  /** Onde o estado vive quando o núcleo corre fora do processo local. */
+  readonly #armazenamento?: ArmazenamentoEstado;
 
-  constructor(registo: Registo, servicoChaves: ServicoChavesCofre, sessao: string = 'demo') {
+  constructor(
+    registo: Registo,
+    servicoChaves: ServicoChavesCofre,
+    sessao: string = 'demo',
+    armazenamento?: ArmazenamentoEstado,
+  ) {
     this.#registo = registo;
     this.#servicoChaves = servicoChaves;
     this.#sessao = sessao;
+    this.#armazenamento = armazenamento;
+  }
+
+  /**
+   * Carrega do armazenamento o cofre da pessoa. Sem armazenamento (modo local)
+   * é um no-op: a memória já é a verdade.
+   */
+  async restaurar(pessoa: string): Promise<void> {
+    if (!this.#armazenamento) return;
+    for (const estado of await this.#armazenamento.listar('cofre.item', pessoa)) {
+      this.#itens.set(estado.id, estado.dados as ItemCofre);
+      const n = Number(String(estado.id).replace(/\D/g, ''));
+      if (Number.isFinite(n) && n >= this.#contadorItem) this.#contadorItem = n + 1;
+    }
+    for (const estado of await this.#armazenamento.listar('cofre.pacote', pessoa)) {
+      this.#pacotes.set(estado.id, estado.dados as PacoteMinimo);
+      const n = Number(String(estado.id).replace(/\D/g, ''));
+      if (Number.isFinite(n) && n >= this.#contadorPacote) this.#contadorPacote = n + 1;
+    }
+  }
+
+  async #guardarItemNaBase(item: ItemCofre): Promise<void> {
+    if (!this.#armazenamento) return;
+    await this.#armazenamento.gravar('cofre.item', item.pessoa, item.id, item);
+  }
+
+  async #guardarPacoteNaBase(pacote: PacoteMinimo): Promise<void> {
+    if (!this.#armazenamento) return;
+    await this.#armazenamento.gravar('cofre.pacote', pacote.pessoa, pacote.id, pacote);
   }
 
   /**
@@ -127,6 +164,7 @@ export class CofreDigital {
     };
 
     this.#itens.set(id, item);
+    await this.#guardarItemNaBase(item);
 
     // No evento de auditoria NUNCA entra o conteúdo em claro nem cifrado
     await this.#registo.registar({
@@ -182,6 +220,7 @@ export class CofreDigital {
     if (!item || item.pessoa !== pessoa) return false;
 
     this.#itens.delete(itemId);
+    if (this.#armazenamento) await this.#armazenamento.apagar('cofre.item', itemId);
 
     await this.#registo.registar({
       tipo: 'cofre.item.apagado',
@@ -344,6 +383,7 @@ export class CofreDigital {
     };
 
     this.#pacotes.set(id, pacote);
+    await this.#guardarPacoteNaBase(pacote);
 
     await this.#registo.registar({
       tipo: 'cofre.pacote.preparado',
@@ -374,6 +414,7 @@ export class CofreDigital {
     if (!pacote || pacote.pessoa !== pessoa) return null;
 
     pacote.aprovadoEm = new Date().toISOString();
+    await this.#guardarPacoteNaBase(pacote);
 
     await this.#registo.registar({
       tipo: 'cofre.pacote.aprovado',

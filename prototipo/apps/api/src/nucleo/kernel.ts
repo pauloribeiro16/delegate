@@ -9,6 +9,7 @@
  */
 import { criarCanalGrammy, type CanalGrammy, type Botoes, type MensagemRecebida } from './canal.js';
 import { SESSAO, URL_BASE_EXTERNA, type Base } from './bd.js';
+import { ArmazenamentoEstado } from './estado.js';
 import { Registo } from './eventos/registo.js';
 import { criarTratadorMensagens, type EstadoCanalPartilhado } from './canal/tratador-mensagens.js';
 import { Henriques } from './henriques/henriques.js';
@@ -175,11 +176,20 @@ export async function criarKernel(deps: DependenciasKernel): Promise<Kernel> {
   const buscador = new BuscadorConhecimento();
   const henriques = new Henriques(registro, clientePorta, SESSAO, deps.motorDecisao, redator, buscador);
 
+  // Fora do processo local, o estado operacional vive na base: cada função
+  // do alojamento tem a sua memória, e o rascunho de uma esplanada não pode
+  // desaparecer entre pedidos.
+  let armazenamento: ArmazenamentoEstado | undefined;
+  if (URL_BASE_EXTERNA) {
+    armazenamento = new ArmazenamentoEstado(base.escrita as never);
+    await armazenamento.preparar();
+  }
+
   const servicoChaves = new ServicoChavesCofre(registro, SESSAO);
-  const cofre = new CofreDigital(registro, servicoChaves, SESSAO);
-  const mandatos = new GestorMandatos(registro, SESSAO);
+  const cofre = new CofreDigital(registro, servicoChaves, SESSAO, armazenamento);
+  const mandatos = new GestorMandatos(registro, SESSAO, armazenamento);
   const politica = new MotorPolitica(registro, mandatos, SESSAO);
-  const orquestrador = new OrquestradorMissoes(registro, SESSAO);
+  const orquestrador = new OrquestradorMissoes(registro, SESSAO, armazenamento);
 
   const fluxoD2 = new GestorFluxoD2({
     cofre,
@@ -189,6 +199,7 @@ export async function criarKernel(deps: DependenciasKernel): Promise<Kernel> {
     canal,
     sessao: SESSAO,
     redator,
+    armazenamento,
   });
 
   const cenarios = new ProcessadorCenarios({
@@ -276,6 +287,15 @@ export async function criarKernel(deps: DependenciasKernel): Promise<Kernel> {
       .catch(() => quente);
   }
 
+  /** Carrega da base o estado da pessoa: cofre, mandatos, missões e rascunho. */
+  async function hidratar(pessoa: string): Promise<void> {
+    if (!armazenamento) return;
+    await cofre.restaurar(pessoa);
+    await mandatos.restaurar(pessoa);
+    await orquestrador.restaurar(pessoa);
+    await fluxoD2.restaurar(pessoa);
+  }
+
   const tratarCanal = criarTratadorMensagens({
     canal,
     registro,
@@ -302,7 +322,7 @@ export async function criarKernel(deps: DependenciasKernel): Promise<Kernel> {
   // O tratador entra NO canal do Telegram (o wrapper herda o fecho via spread):
   // é assim que as atualizações do bot — long polling local ou webhook no
   // Vercel — chegam ao mesmo caminho que o painel.
-  canal._aoReceber(tratarCanal.tratar);
+  canal._aoReceber((m) => tratarMensagem(m));
 
   let filaCanalWeb: Promise<void> = Promise.resolve();
 
@@ -320,7 +340,7 @@ export async function criarKernel(deps: DependenciasKernel): Promise<Kernel> {
       conversa: ligacao.conversa,
       quando: new Date().toISOString(),
     };
-    const tarefa = filaCanalWeb.then(() => tratarCanal.tratar(m));
+    const tarefa = filaCanalWeb.then(() => tratarMensagem(m));
     filaCanalWeb = tarefa.catch(() => {});
     await tarefa;
   }
@@ -505,6 +525,17 @@ export async function criarKernel(deps: DependenciasKernel): Promise<Kernel> {
     }
   }
 
+  // O tratamento de uma mensagem: hidrata o estado da pessoa, deixa o
+  // tratador correr e grava o rascunho (que o fluxo D2 vai alterando).
+  async function tratarMensagem(m: MensagemRecebida): Promise<void> {
+    await hidratar(m.pessoa);
+    try {
+      await tratarCanal.tratar(m);
+    } finally {
+      await fluxoD2.persistir(m.pessoa).catch(() => {});
+    }
+  }
+
   return {
     base,
     registro,
@@ -521,7 +552,7 @@ export async function criarKernel(deps: DependenciasKernel): Promise<Kernel> {
     buscador,
     conversasPorPessoa,
     estado: estadoCanal,
-    tratar: (m) => tratarCanal.tratar(m),
+    tratar: (m) => tratarMensagem(m),
     /** Webhook do Telegram: processa uma atualização crua pelo mesmo canal. */
     processarAtualizacaoTelegram: async (atualizacao: unknown) => {
       const bot = canalTelegram._bot();
